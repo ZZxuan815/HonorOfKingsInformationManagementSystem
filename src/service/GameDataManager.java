@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.Admin;
 import model.Equipment;
 import model.Hero;
 import model.MatchRecord;
@@ -14,6 +15,7 @@ import model.Team;
 
 public class GameDataManager {
     private Map<String, Player> players = new HashMap<>();
+    private Map<String, Admin> admins = new HashMap<>();
     private Map<String, Hero> heroes = new HashMap<>();
     private Map<String, Equipment> equipment = new HashMap<>();
     private Map<String, Team> teams = new HashMap<>();
@@ -81,6 +83,18 @@ public class GameDataManager {
 
     public Collection<Team> getAllTeams() {
         return teams.values();
+    }
+
+    public void addAdmin(Admin admin) {
+        admins.put(admin.getId(), admin);
+    }
+
+    public Admin getAdmin(String id) {
+        return admins.get(id);
+    }
+
+    public Collection<Admin> getAllAdmins() {
+        return admins.values();
     }
 
     public void addMatchRecord(MatchRecord record) {
