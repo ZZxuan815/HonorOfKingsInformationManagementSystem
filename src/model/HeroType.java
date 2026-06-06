@@ -6,5 +6,5 @@ public enum HeroType {
     ASSASSIN,
     TANK,
     SUPPORT,
-    MARKSMAN,
+    MARKSMAN
 }
