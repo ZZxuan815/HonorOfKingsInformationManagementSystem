@@ -17,18 +17,47 @@ public class RankingService {
     }
 
     public List<Player> getPlayerRanking() {
+        return getPlayerRanking(1);
+    }
+
+    public List<Player> getPlayerRanking(int sortMode) {
         List<Player> players = new ArrayList<>(dataManager.getAllPlayers());
         Collections.sort(players, new Comparator<Player>() {
             @Override
             public int compare(Player p1, Player p2) {
-                double score1 = (p1.getWinRate() * 100) + p1.getLevel();
-                double score2 = (p2.getWinRate() * 100) + p2.getLevel();
-                if (score1 > score2) return -1;
-                if (score1 < score2) return 1;
+                int cmp = 0;
+                if (sortMode == 1) {
+                    double score1 = (p1.getWinRate() * 100) + p1.getLevel();
+                    double score2 = (p2.getWinRate() * 100) + p2.getLevel();
+                    if (score1 > score2) cmp = -1;
+                    else if (score1 < score2) cmp = 1;
+                } else if (sortMode == 2) {
+                    if (p1.getWinRate() > p2.getWinRate()) cmp = -1;
+                    else if (p1.getWinRate() < p2.getWinRate()) cmp = 1;
+                } else if (sortMode == 3) {
+                    if (p1.getLevel() > p2.getLevel()) cmp = -1;
+                    else if (p1.getLevel() < p2.getLevel()) cmp = 1;
+                } else if (sortMode == 4) {
+                    int matches1 = countMatchesForPlayer(p1.getId());
+                    int matches2 = countMatchesForPlayer(p2.getId());
+                    if (matches1 > matches2) cmp = -1;
+                    else if (matches1 < matches2) cmp = 1;
+                }
+                if (cmp != 0) return cmp;
                 return p1.getName().compareTo(p2.getName());
             }
         });
         return players;
+    }
+
+    public int countMatchesForPlayer(String playerId) {
+        int count = 0;
+        for (var m : dataManager.getAllMatchRecords()) {
+            if (m.getHeroPicks().containsKey(playerId)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public List<Equipment> getEquipmentRanking() {

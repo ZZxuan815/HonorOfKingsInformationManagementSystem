@@ -204,6 +204,17 @@ public class HonorOfKingsApp {
             System.out.println("Type: " + hero.getType());
             System.out.println("Base Stats: " + hero.getBaseStats());
             System.out.println("Compatible Equipment: " + hero.getCompatibleEquipment());
+            System.out.println("Players who own this hero:");
+            boolean found = false;
+            for (Player p : gdm.getAllPlayers()) {
+                if (p.getOwnedHeroes().contains(hero.getName())) {
+                    System.out.println("  - " + p.getName() + " (ID: " + p.getId() + ")");
+                    found = true;
+                }
+            }
+            if (!found) {
+                System.out.println("  (none)");
+            }
         } else {
             System.out.println("Hero not found.");
         }
@@ -803,6 +814,8 @@ public class HonorOfKingsApp {
             System.out.println("Team A: " + match.getTeamA());
             System.out.println("Team B: " + match.getTeamB());
             System.out.println("Winner: " + match.getWinner());
+            String resultStr = (match.getResult() != null) ? match.getResult().name() : "Unknown";
+            System.out.println("Result: " + resultStr);
             System.out.println("Hero Picks: " + match.getHeroPicks());
         } else {
             System.out.println("Match not found.");
@@ -855,38 +868,82 @@ public class HonorOfKingsApp {
             return;
         }
 
+        int wins = 0;
+        int losses = 0;
+        java.util.Map<String, Integer> heroPickCount = new java.util.HashMap<>();
+        int totalPicks = 0;
+
         System.out.println("\n=== Match History ===");
         for (MatchRecord m : results) {
             String opponent;
-            String result;
+            String matchResult;
             if (searchType == 1) {
                 Player p = gdm.getPlayer(id);
                 String playerTeam = (p != null) ? p.getTeamId() : "Unknown";
                 opponent = m.getTeamA().equals(playerTeam) ? m.getTeamB() : m.getTeamA();
-                result = m.getWinner().equals(playerTeam) ? "WIN" : "LOSS";
+                matchResult = m.getWinner().equals(playerTeam) ? "WIN" : "LOSS";
             } else {
                 opponent = m.getTeamA().equals(id) ? m.getTeamB() : m.getTeamA();
-                result = m.getWinner().equals(id) ? "WIN" : "LOSS";
+                matchResult = m.getWinner().equals(id) ? "WIN" : "LOSS";
             }
+            if (matchResult.equals("WIN")) wins++;
+            else losses++;
+
+            for (String heroName : m.getHeroPicks().values()) {
+                heroPickCount.put(heroName, heroPickCount.getOrDefault(heroName, 0) + 1);
+                totalPicks++;
+            }
+
             System.out.println("Match ID: " + m.getMatchId());
             System.out.println("Date: " + m.getDate());
             System.out.println("Opponent: " + opponent);
-            System.out.println("Result: " + result);
+            System.out.println("Result: " + matchResult);
             System.out.println("Hero Picks: " + m.getHeroPicks());
             System.out.println();
+        }
+
+        System.out.println("--- Aggregate Statistics ---");
+        System.out.println("Total: " + wins + " wins, " + losses + " losses");
+        if (totalPicks > 0) {
+            System.out.println("Hero Pick Rate:");
+            List<String> sortedHeroes = new ArrayList<>(heroPickCount.keySet());
+            java.util.Collections.sort(sortedHeroes);
+            for (String hero : sortedHeroes) {
+                int count = heroPickCount.get(hero);
+                double rate = (double) count / totalPicks * 100.0;
+                System.out.printf("  %s: %.1f%% (%d/%d)%n", hero, rate, count, totalPicks);
+            }
         }
     }
 
     private static void viewPlayerLeaderboard(RankingService rankingService) {
         System.out.println("\n=== Player Leaderboard ===");
-        System.out.println("Rank | Name                  | Score | Win Rate  | Level");
-        System.out.println("----------------------------------------------------------");
+        System.out.println("Sort by: [1] Custom Score [2] Win Rate [3] Level [4] Number of Matches");
+        int sortMode = InputHelper.readIntRange("Enter your choice: ", 1, 4);
+
+        String header;
+        if (sortMode == 1) header = "Custom Score";
+        else if (sortMode == 2) header = "Win Rate  ";
+        else if (sortMode == 3) header = "Level     ";
+        else header = "Matches   ";
+
+        System.out.printf("Rank | Name                  | %s | Win Rate  | Level%n", header);
+        System.out.println("--------------------------------------------------------------");
         int rank = 1;
-        for (Player player : rankingService.getPlayerRanking()) {
-            int score = (int)((player.getWinRate() * 100) + player.getLevel());
+        for (Player player : rankingService.getPlayerRanking(sortMode)) {
+            String sortValue;
+            if (sortMode == 1) {
+                sortValue = String.format("%d", (int)((player.getWinRate() * 100) + player.getLevel()));
+            } else if (sortMode == 2) {
+                sortValue = String.format("%.2f%%", player.getWinRate() * 100);
+            } else if (sortMode == 3) {
+                sortValue = String.format("%d", player.getLevel());
+            } else {
+                sortValue = String.format("%d", rankingService.countMatchesForPlayer(player.getId()));
+            }
             String winRateStr = String.format("%.2f%%", player.getWinRate() * 100);
-            System.out.printf("%-5d| %-21s| %-6d| %-10s| %d%n",
-                    rank, player.getName(), score, winRateStr, player.getLevel());
+            System.out.printf("%-5d| %-21s| %-11s| %-10s| %d%n",
+                    rank, player.getName(), sortValue, winRateStr, player.getLevel());
             rank++;
         }
     }

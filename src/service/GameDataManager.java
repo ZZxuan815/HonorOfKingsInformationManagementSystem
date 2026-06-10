@@ -30,7 +30,17 @@ public class GameDataManager {
     }
 
     public Player removePlayer(String id) {
-        return players.remove(id);
+        Player player = players.remove(id);
+        if (player != null) {
+            String teamId = player.getTeamId();
+            if (teamId != null && !teamId.isEmpty()) {
+                Team team = teams.get(teamId);
+                if (team != null) {
+                    team.getMemberIds().remove(id);
+                }
+            }
+        }
+        return player;
     }
 
     public Collection<Player> getAllPlayers() {
@@ -46,7 +56,14 @@ public class GameDataManager {
     }
 
     public Hero removeHero(String name) {
-        return heroes.remove(name);
+        Hero hero = heroes.remove(name);
+        if (hero != null) {
+            for (Player p : players.values()) {
+                p.getOwnedHeroes().remove(name);
+                p.getEquippedItems().remove(name);
+            }
+        }
+        return hero;
     }
 
     public Collection<Hero> getAllHeroes() {
@@ -78,7 +95,16 @@ public class GameDataManager {
     }
 
     public Team removeTeam(String teamId) {
-        return teams.remove(teamId);
+        Team team = teams.remove(teamId);
+        if (team != null) {
+            for (String memberId : team.getMemberIds()) {
+                Player p = players.get(memberId);
+                if (p != null) {
+                    p.setTeamId("");
+                }
+            }
+        }
+        return team;
     }
 
     public Collection<Team> getAllTeams() {

@@ -96,6 +96,7 @@ public class MatchRecord implements Serializable, Searchable {
 
     @Override
     public String toString() {
-        return "MatchRecord{matchId='" + matchId + "', date='" + date + "', teamA='" + teamA + "', teamB='" + teamB + "', winner='" + winner + "'}";
+        String resultStr = (result != null) ? result.name() : winner;
+        return "MatchRecord{matchId='" + matchId + "', date='" + date + "', teamA='" + teamA + "', teamB='" + teamB + "', winner='" + winner + "', result=" + resultStr + "}";
     }
 }

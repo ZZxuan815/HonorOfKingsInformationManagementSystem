@@ -192,6 +192,34 @@
 | **Function** | Automated Tournament Simulation — verify at least 10 random 1v1 matches run silently, win analytics are computed, and a formatted `tournament_report.txt` is written to disk with header, match log, and ranked leaderboard |
 | **Input** | Login as Admin → Option 12 (HOK Arena) → Any names → Mode: [3] Trigger Automated Global Tournament & Export Report |
 | **Expected** | Console prints "Global tournament simulation complete! Full analytics exported to 'tournament_report.txt'." File exists on disk containing timestamped header, 10+ match logs, and a "King of the Hill" leaderboard sorted by win rate descending. |
-| **Actual** | 86 matches simulated across 15 heroes (round-robin pairs). `tournament_report.txt` created with title header "HONOR OF KINGS — AUTOMATED TOURNAMENT REPORT", match outcome log, and ranked table with Champion crowned. |
+ | **Actual** | 86 matches simulated across 15 heroes (round-robin pairs). `tournament_report.txt` created with title header "HONOR OF KINGS — AUTOMATED TOURNAMENT REPORT", match outcome log, and ranked table with Champion crowned. |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T15: Match History by Player ID
+
+| Field | Value |
+|-------|-------|
+| **ID** | T15 |
+| **Function** | Match History by Player ID — verify aggregate stats display win/loss record and hero pick rates |
+| **Input** | Login as Player → Option 5 (View match history) → Search: [1] Player ID → ID: `P001` → Recent matches: `5` |
+| **Expected** | List of matches shown with opponent and result. Followed by "Aggregate Statistics" section showing "Total: X wins, Y losses" and "Hero Pick Rate" listing each hero's percentage and count. |
+| **Actual** | 5 matches listed with correct opponent/result. Aggregate stats showed Total: 3 wins, 2 losses. Hero Pick Rate included Li Bai: 40.0%, Han Xin: 20.0%, etc. |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T16: Player Equipped Items Display
+
+| Field | Value |
+|-------|-------|
+| **ID** | T16 |
+| **Function** | Player Equipped Items Display — verify owned heroes show associated equipment under "Equipped Items" |
+| **Input** | Login as Player → Option 4 (View player info) → ID: `P001` (Li Bai) |
+| **Expected** | After "Owned Heroes", the "Equipped Items:" section lists each hero with their equipment: "Li Bai -> [Shadow Blade, Boots of Resistance]", "Han Xin -> [Endless Blade, Guardian Angel]", "Zhao Yun -> [Shadow Blade, Armor of Thorns]". |
+| **Actual** | Equipped Items displayed correctly for all 3 owned heroes with full equipment lists. |
 | **Result** | PASS |
 | **Bug Found** | None |
