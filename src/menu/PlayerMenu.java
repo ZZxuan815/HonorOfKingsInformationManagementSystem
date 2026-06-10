@@ -1,7 +1,11 @@
 package menu;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.Equipment;
 import model.Hero;
@@ -136,7 +140,7 @@ public class PlayerMenu {
             System.out.println("Owned Heroes: " + player.getOwnedHeroes());
             System.out.println("Equipped Items:");
             for (String hero : player.getOwnedHeroes()) {
-                java.util.List<String> items = player.getEquippedItems().get(hero);
+                List<String> items = player.getEquippedItems().get(hero);
                 if (items != null && !items.isEmpty()) {
                     System.out.println("  " + hero + " -> " + items);
                 } else {
@@ -185,7 +189,7 @@ public class PlayerMenu {
         System.out.println("Current Owned Heroes: " + player.getOwnedHeroes());
         String heroesStr = InputHelper.readString("Enter owned heroes (comma-separated, or press Enter to skip): ");
         if (!heroesStr.isEmpty()) {
-            player.setOwnedHeroes(java.util.Arrays.asList(heroesStr.split(",")));
+            player.setOwnedHeroes(Arrays.asList(heroesStr.split(",")));
         }
 
         String equipHero = InputHelper.readString("Enter hero name to equip (or press Enter to skip): ");
@@ -195,7 +199,7 @@ public class PlayerMenu {
             } else {
                 String equipStr = InputHelper.readString("Enter equipment names (comma-separated): ");
                 if (!equipStr.isEmpty()) {
-                    player.getEquippedItems().put(equipHero, java.util.Arrays.asList(equipStr.split(",")));
+                    player.getEquippedItems().put(equipHero, Arrays.asList(equipStr.split(",")));
                     System.out.println("Equipment updated for " + equipHero + ".");
                 }
             }
@@ -241,7 +245,7 @@ public class PlayerMenu {
 
         int wins = 0;
         int losses = 0;
-        java.util.Map<String, Integer> heroPickCount = new java.util.HashMap<>();
+        Map<String, Integer> heroPickCount = new HashMap<>();
         int totalPicks = 0;
 
         System.out.println("\n=== Match History ===");
@@ -278,7 +282,7 @@ public class PlayerMenu {
         if (totalPicks > 0) {
             System.out.println("Hero Pick Rate:");
             List<String> sortedHeroes = new ArrayList<>(heroPickCount.keySet());
-            java.util.Collections.sort(sortedHeroes);
+            Collections.sort(sortedHeroes);
             for (String hero : sortedHeroes) {
                 int count = heroPickCount.get(hero);
                 double rate = (double) count / totalPicks * 100.0;
