@@ -66,9 +66,88 @@ This system manages players, heroes, equipment, teams, and match records for Hon
 ---
 
 ## 5. UML Draft Specification
-* **Core Hierarchy:** Abstract class `Person` serves as the foundation, which is extended by `Player` and `Admin`.
-* **Data Management:** All domain models (`Hero`, `Equipment`, `Team`, `MatchRecord`) implement `Serializable` to support system-wide data savings.
-* **Service Architecture:** `HonorOfKingsApp` acts as the main director, utilizing specialized service layers (`AuthenticationService`, `SearchService`, `RankingService`, `FileStorageService`) to execute business logic.
+
+### Class Hierarchy (ASCII)
+
+```
+                                <<Serializable>>
+                                    Person (abstract)
+                                  /                  \
+                              Player               Admin
+  +--------------------------+   |                     |
+  | level: int               |   |               +------------+
+  | winRate: double          |   |               | role: String|
+  | teamId: String           |   |               +------------+
+  | ownedHeroes: List<String>|   |
+  | equippedItems: Map       |   |
+  +--------------------------+   |
+
+  <<Serializable>> + <<Searchable>>
+  +--------+  +-----------+  +-------+  +-------------+
+  |  Hero  |  | Equipment |  | Team  |  | MatchRecord |
+  +--------+  +-----------+  +-------+  +-------------+
+  | name   |  | name      |  |teamId |  | matchId     |
+  | type   |  | type      |  | name  |  | date        |
+  |baseStats| | statBonus |  |memberIds| | teamA       |
+  |compatible| | usageCount|  |totalM |  | teamB       |
+  |Equipment| | winRateC..|  | wins  |  | winner      |
+  +--------+  +-----------+  +-------+  | result      |
+                                         | heroPicks   |
+                                         +-------------+
+```
+
+### Associations
+
+```
+Team "1" ──aggregates──> "*" Player  (via memberIds list of player ID strings)
+MatchRecord ──references──> Team      (via teamA / teamB fields)
+Player "1" ──owns──> "*" Hero        (via ownedHeroes list of hero name strings)
+Player "1" ──equips──> "*" Equipment (via equippedItems map: heroName → List<Equipment>)
+Hero "1" ──compatible──> "*" Equipment (via compatibleEquipment list)
+```
+
+### Service Layer Architecture
+
+```
+HonorOfKingsApp (Main Controller)
+         │
+         ├──► AuthenticationService
+         │       ├── login(id, password)
+         │       ├── logout()
+         │       ├── isAdmin()
+         │       └── getCurrentUser()
+         │
+         ├──► SearchService
+         │       ├── findPlayerByName(name)
+         │       ├── findPlayerById(id)
+         │       ├── findHeroByName(name)
+         │       ├── findTeamByName(name)
+         │       ├── findTeamById(id)
+         │       └── search(keyword)
+         │
+         ├──► RankingService
+         │       ├── getPlayerRanking(sortMode)
+         │       ├── countMatchesForPlayer(id)
+         │       └── getEquipmentRanking()
+         │
+         ├──► ExtraFeaturesService
+         │       ├── recommendEquipment(hero)
+         │       ├── simulateCombat(h1, h2)
+         │       ├── simulateGraphicalCombat(h1, h2)
+         │       └── runAutomatedTournament()
+         │
+         ├──► FileStorageService
+         │       ├── saveData(GameDataManager)
+         │       └── loadData()
+         │
+         └──► GameDataManager (Central Data Store)
+                 ├── Map<String, Player>   players
+                 ├── Map<String, Admin>    admins
+                 ├── Map<String, Hero>     heroes
+                 ├── Map<String, Equipment> equipment
+                 ├── Map<String, Team>     teams
+                 └── List<MatchRecord>     matches
+```
 
 ---
 
