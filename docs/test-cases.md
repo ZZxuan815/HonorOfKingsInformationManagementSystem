@@ -10,7 +10,7 @@
 | **Function** | Login Authentication — Admin user |
 | **Input** | ID: `A001`, Password: `admin123` |
 | **Expected** | "Welcome, AdminZhang!" displayed, Admin Menu shown |
-| **Actual** | "Welcome, AdminZhang!" followed by Admin Menu with 12 options |
+| **Actual** | "Welcome, AdminZhang!" followed by Admin Menu with 14 options |
 | **Result** | PASS |
 | **Bug Found** | None |
 
@@ -36,7 +36,7 @@
 |-------|-------|
 | **ID** | T03 |
 | **Function** | Player Leaderboard — verify descending score with alphabetical tie-break |
-| **Input** | Login as Player (ID: `P001`, Password: `pass123`) → Option 5 (View player leaderboard) |
+| **Input** | Login as Player (ID: `P001`, Password: `pass123`) → Option 6 (View player leaderboard) |
 | **Expected** | Sorted by `(winRate*100)+level` descending. Ties (e.g., Li Bai score=103 vs Mo Ye score=103) sorted alphabetically by name |
 | **Actual** | Han Xin (127), Lu Bu (126), Cao Cao (114), Li Bai (103), Mo Ye (103) — correct order |
 | **Result** | PASS |
@@ -50,7 +50,7 @@
 |-------|-------|
 | **ID** | T04 |
 | **Function** | Equipment Statistics — all scores are 0.0 due to unpopulated usage data |
-| **Input** | Login as Admin → Option 10 (View equipment statistics) |
+| **Input** | Login as Admin → Option 11 (View equipment statistics) |
 | **Expected** | All equipment displayed with Score = 0.00, sorted alphabetically (all ties) |
 | **Actual** | 20 equipment items listed, all scores 0.00, sorted alphabetically by name |
 | **Result** | PASS |
@@ -64,7 +64,7 @@
 |-------|-------|
 | **ID** | T05 |
 | **Function** | Global Search — case-insensitive keyword matching across entities |
-| **Input** | Login as Admin → Option 11 → Keyword: `li` |
+| **Input** | Login as Admin → Option 12 → Keyword: `li` |
 | **Expected** | Returns Players/Heroes/Equipment/Teams/MatchRecords whose fields contain "li" (case-insensitive) |
 | **Actual** | Found Li Bai (Player), Li Bai (Hero), Bai Li Shou Yue (Hero), plus relevant Equipment and MatchRecords |
 | **Result** | PASS |
@@ -78,7 +78,7 @@
 |-------|-------|
 | **ID** | T06 |
 | **Function** | Player self-profile edit — update level, win rate, owned heroes |
-| **Input** | Login as Player `P001` (Li Bai) → Option 7 → New level: `50` → New win rate: `85` → Owned heroes: `Li Bai,Zhao Yun` |
+| **Input** | Login as Player `P001` (Li Bai) → Option 8 → New level: `50` → New win rate: `85` → Owned heroes: `Li Bai,Zhao Yun` |
 | **Expected** | "Profile updated successfully." Level changes from 35 to 50, win rate from 68% to 85%, owned heroes updated |
 | **Actual** | Profile updated. Re-login and view player info confirms Level=50, Win Rate=85%, Owned Heroes=[Li Bai, Zhao Yun] |
 | **Result** | PASS |
@@ -148,7 +148,7 @@
 |-------|-------|
 | **ID** | T11 |
 | **Function** | Equipment Recommendation — verify MAGE hero gets magic-type equipment recommended |
-| **Input** | Login as Player → Option 8 (HOK Arena) → First hero: `Diao Chan` (MAGE) → Second hero: `Lu Bu` (WARRIOR) |
+| **Input** | Login as Player → Option 9 (HOK Arena) → First hero: `Diao Chan` (MAGE) → Second hero: `Lu Bu` (WARRIOR) |
 | **Expected** | Diao Chan receives magic/mana equipment (e.g., Book of Sages). Lu Bu receives attack/crit weapons. Both see top 3 recommendations. |
 | **Actual** | Diao Chan recommended: Book of Sages, Boots of Resistance, Frozen Staff. Lu Bu recommended: Shadow Blade, Endless Blade, Bloodthirsty Blade. |
 | **Result** | PASS |
@@ -162,7 +162,7 @@
 |-------|-------|
 | **ID** | T12 |
 | **Function** | 1v1 Combat Simulation — verify turn-based battle loop runs, critical strikes (20%) and dodges (15%) trigger, and a winner is declared |
-| **Input** | Login as Admin → Option 12 (HOK Arena) → First hero: `Li Bai` → Second hero: `Han Xin` → Press Enter to start battle |
+| **Input** | Login as Admin → Option 13 (HOK Arena) → First hero: `Li Bai` → Second hero: `Han Xin` → Press Enter to start battle |
 | **Expected** | Multi-round battle log printed. Each round shows damage dealt, critical strike messages ("CRITICAL!"), dodge messages ("dodged the attack!"). One hero's HP reaches zero and a winner is declared. |
 | **Actual** | Battle ran for 6 rounds with critical hits and dodges triggering. Winner: Han Xin declared. Full step-by-step action log printed. |
 | **Result** | PASS |
@@ -176,7 +176,7 @@
 |-------|-------|
 | **ID** | T13 |
 | **Function** | Graphical GUI Dialog Combat — verify `JOptionPane.showMessageDialog()` pop-ups render correctly for each battle round, showing ASCII health bars, damage counters, critical hit alerts, and a final champion declaration |
-| **Input** | Login as Player → Option 8 (HOK Arena) → First hero: `Li Bai` → Second hero: `Han Xin` → Mode: [2] Dynamic Windows GUI Mode |
+| **Input** | Login as Player → Option 9 (HOK Arena) → First hero: `Li Bai` → Second hero: `Han Xin` → Mode: [2] Dynamic Windows GUI Mode |
 | **Expected** | A series of graphical dialog windows appear. Each shows an ASCII health bar, damage logs, and "CRITICAL STRIKE!" or "DODGED" messages. Final pop-up declares "THE CHAMPION: [name]!". All windows are dismissible with OK. |
  | **Actual** | 6 round dialogs appeared with health bars and damage text. Final champion dialog displayed "THE CHAMPION: Li Bai!". No exceptions thrown. Windows rendered correctly on screen. |
 | **Result** | PASS |
@@ -190,7 +190,7 @@
 |-------|-------|
 | **ID** | T14 |
 | **Function** | Automated Tournament Simulation — verify at least 10 random 1v1 matches run silently, win analytics are computed, and a formatted `tournament_report.txt` is written to disk with header, match log, and ranked leaderboard |
-| **Input** | Login as Admin → Option 12 (HOK Arena) → Any names → Mode: [3] Trigger Automated Global Tournament & Export Report |
+| **Input** | Login as Admin → Option 13 (HOK Arena) → Any names → Mode: [3] Trigger Automated Global Tournament & Export Report |
 | **Expected** | Console prints "Global tournament simulation complete! Full analytics exported to 'tournament_report.txt'." File exists on disk containing timestamped header, 10+ match logs, and a "King of the Hill" leaderboard sorted by win rate descending. |
  | **Actual** | 86 matches simulated across 15 heroes (round-robin pairs). `tournament_report.txt` created with title header "HONOR OF KINGS — AUTOMATED TOURNAMENT REPORT", match outcome log, and ranked table with Champion crowned. |
 | **Result** | PASS |

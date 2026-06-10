@@ -91,6 +91,7 @@ public class MatchRecord implements Serializable, Searchable {
         if (teamA.toLowerCase().contains(kw)) return true;
         if (teamB.toLowerCase().contains(kw)) return true;
         if (winner.toLowerCase().contains(kw)) return true;
+        if (result != null && result.name().toLowerCase().contains(kw)) return true;
         return false;
     }
 
