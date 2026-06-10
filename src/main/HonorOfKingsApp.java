@@ -1,12 +1,12 @@
 package main;
 
-import model.Admin;
 import model.Equipment;
 import model.Hero;
 import model.HeroType;
 import model.Player;
 import service.AuthenticationService;
 import service.GameDataManager;
+import service.RankingService;
 import util.DataInitializer;
 import util.InputHelper;
 
@@ -15,6 +15,7 @@ public class HonorOfKingsApp {
         GameDataManager gdm = new GameDataManager();
         DataInitializer.init(gdm);
         AuthenticationService authService = new AuthenticationService(gdm);
+        RankingService rankingService = new RankingService(gdm);
 
         while (true) {
             System.out.println("\n=== Honor of Kings - Login ===");
@@ -39,9 +40,9 @@ public class HonorOfKingsApp {
             System.out.println("Welcome, " + authService.getCurrentUser().getName() + "!");
 
             if (authService.isAdmin()) {
-                runAdminMenu(gdm, authService);
+                runAdminMenu(gdm, rankingService, authService);
             } else {
-                runPlayerMenu(gdm);
+                runPlayerMenu(gdm, rankingService);
             }
 
             authService.logout();
@@ -51,16 +52,18 @@ public class HonorOfKingsApp {
 
     // ===================== PLAYER MENU =====================
 
-    private static void runPlayerMenu(GameDataManager gdm) {
+    private static void runPlayerMenu(GameDataManager gdm, RankingService rankingService) {
         while (true) {
             System.out.println("\n=== Player Menu ===");
             System.out.println("1. View all heroes");
             System.out.println("2. View all equipment");
             System.out.println("3. View hero details");
             System.out.println("4. View player info");
-            System.out.println("5. Logout");
+            System.out.println("5. View player leaderboard");
+            System.out.println("6. View equipment statistics");
+            System.out.println("7. Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 5);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 7);
 
             switch (choice) {
                 case 1:
@@ -76,6 +79,12 @@ public class HonorOfKingsApp {
                     viewPlayerInfo(gdm);
                     break;
                 case 5:
+                    viewPlayerLeaderboard(rankingService);
+                    break;
+                case 6:
+                    viewEquipmentStatistics(rankingService);
+                    break;
+                case 7:
                     return;
                 default:
                     System.out.println("Invalid option.");
@@ -127,7 +136,7 @@ public class HonorOfKingsApp {
 
     // ===================== ADMIN MENU =====================
 
-    private static void runAdminMenu(GameDataManager gdm, AuthenticationService authService) {
+    private static void runAdminMenu(GameDataManager gdm, RankingService rankingService, AuthenticationService authService) {
         while (true) {
             System.out.println("\n=== Admin Menu ===");
             System.out.println("1. Hero Management");
@@ -135,9 +144,11 @@ public class HonorOfKingsApp {
             System.out.println("3. View all heroes");
             System.out.println("4. View all equipment");
             System.out.println("5. View match records");
-            System.out.println("6. Logout");
+            System.out.println("6. View player leaderboard");
+            System.out.println("7. View equipment statistics");
+            System.out.println("8. Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 6);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 8);
 
             switch (choice) {
                 case 1:
@@ -156,6 +167,12 @@ public class HonorOfKingsApp {
                     viewAllMatchRecords(gdm);
                     break;
                 case 6:
+                    viewPlayerLeaderboard(rankingService);
+                    break;
+                case 7:
+                    viewEquipmentStatistics(rankingService);
+                    break;
+                case 8:
                     return;
                 default:
                     System.out.println("Invalid option.");
@@ -337,6 +354,33 @@ public class HonorOfKingsApp {
         }
         for (var match : gdm.getAllMatchRecords()) {
             System.out.println(match);
+        }
+    }
+
+    private static void viewPlayerLeaderboard(RankingService rankingService) {
+        System.out.println("\n=== Player Leaderboard ===");
+        System.out.println("Rank | Name                  | Score | Win Rate  | Level");
+        System.out.println("----------------------------------------------------------");
+        int rank = 1;
+        for (Player player : rankingService.getPlayerRanking()) {
+            int score = (int)((player.getWinRate() * 100) + player.getLevel());
+            String winRateStr = String.format("%.2f%%", player.getWinRate() * 100);
+            System.out.printf("%-5d| %-21s| %-6d| %-10s| %d%n",
+                    rank, player.getName(), score, winRateStr, player.getLevel());
+            rank++;
+        }
+    }
+
+    private static void viewEquipmentStatistics(RankingService rankingService) {
+        System.out.println("\n=== Equipment Statistics ===");
+        System.out.println("Rank | Name                    | Score     | Usage Count | Win Rate Contribution");
+        System.out.println("---------------------------------------------------------------------------");
+        int rank = 1;
+        for (Equipment eq : rankingService.getEquipmentRanking()) {
+            double score = eq.getUsageCount() * eq.getWinRateContribution();
+            System.out.printf("%-5d| %-24s| %-10.2f| %-12d| %.2f%n",
+                    rank, eq.getName(), score, eq.getUsageCount(), eq.getWinRateContribution());
+            rank++;
         }
     }
 }
