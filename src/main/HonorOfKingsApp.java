@@ -11,6 +11,7 @@ import model.Player;
 import model.Searchable;
 import model.Team;
 import service.AuthenticationService;
+import service.ExtraFeaturesService;
 import service.FileStorageService;
 import service.GameDataManager;
 import service.RankingService;
@@ -31,6 +32,7 @@ public class HonorOfKingsApp {
         AuthenticationService authService = new AuthenticationService(gdm);
         RankingService rankingService = new RankingService(gdm);
         SearchService searchService = new SearchService(gdm);
+        ExtraFeaturesService extraService = new ExtraFeaturesService(gdm);
 
         while (true) {
             System.out.println("\n=== Honor of Kings - Login ===");
@@ -56,9 +58,9 @@ public class HonorOfKingsApp {
             System.out.println("Welcome, " + authService.getCurrentUser().getName() + "!");
 
             if (authService.isAdmin()) {
-                runAdminMenu(gdm, rankingService, searchService, authService, fileStorage);
+                runAdminMenu(gdm, rankingService, searchService, authService, fileStorage, extraService);
             } else {
-                runPlayerMenu(gdm, rankingService, authService, fileStorage);
+                runPlayerMenu(gdm, rankingService, authService, fileStorage, extraService);
             }
 
             authService.logout();
@@ -69,7 +71,8 @@ public class HonorOfKingsApp {
     // ===================== PLAYER MENU =====================
 
     private static void runPlayerMenu(GameDataManager gdm, RankingService rankingService,
-                                       AuthenticationService authService, FileStorageService fileStorage) {
+                                       AuthenticationService authService, FileStorageService fileStorage,
+                                       ExtraFeaturesService extraService) {
         while (true) {
             System.out.println("\n=== Player Menu ===");
             System.out.println("1. View all heroes");
@@ -79,9 +82,10 @@ public class HonorOfKingsApp {
             System.out.println("5. View player leaderboard");
             System.out.println("6. View equipment statistics");
             System.out.println("7. Edit my profile");
-            System.out.println("8. Logout");
+            System.out.println("8. [Bonus] HOK Arena & Recommendation");
+            System.out.println("9. Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 8);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 9);
 
             switch (choice) {
                 case 1:
@@ -106,6 +110,9 @@ public class HonorOfKingsApp {
                     editMyProfile(gdm, authService, fileStorage);
                     break;
                 case 8:
+                    runHokArena(gdm, extraService);
+                    break;
+                case 9:
                     return;
                 default:
                     System.out.println("Invalid option.");
@@ -203,7 +210,7 @@ public class HonorOfKingsApp {
 
     private static void runAdminMenu(GameDataManager gdm, RankingService rankingService,
                                       SearchService searchService, AuthenticationService authService,
-                                      FileStorageService fileStorage) {
+                                      FileStorageService fileStorage, ExtraFeaturesService extraService) {
         while (true) {
             System.out.println("\n=== Admin Menu ===");
             System.out.println("1. Hero Management");
@@ -217,9 +224,10 @@ public class HonorOfKingsApp {
             System.out.println("9. View player leaderboard");
             System.out.println("10. View equipment statistics");
             System.out.println("11. Global search");
-            System.out.println("12. Save & Logout");
+            System.out.println("12. [Bonus] HOK Arena & Recommendation");
+            System.out.println("13. Save & Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 12);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 13);
 
             switch (choice) {
                 case 1:
@@ -256,6 +264,9 @@ public class HonorOfKingsApp {
                     globalSearch(searchService);
                     break;
                 case 12:
+                    runHokArena(gdm, extraService);
+                    break;
+                case 13:
                     fileStorage.saveData(gdm);
                     return;
                 default:
@@ -783,5 +794,51 @@ public class HonorOfKingsApp {
             System.out.println("  - " + item);
         }
         System.out.println("Total: " + results.size() + " result(s).");
+    }
+
+    // ===================== EXTRA FEATURES =====================
+
+    private static void runHokArena(GameDataManager gdm, ExtraFeaturesService extraService) {
+        System.out.println("\n=== HOK Arena & Recommendation System ===");
+
+        String name1 = InputHelper.readString("Enter first hero name: ");
+        Hero h1 = gdm.getHero(name1);
+        if (h1 == null) {
+            System.out.println("Hero '" + name1 + "' not found.");
+            return;
+        }
+
+        String name2 = InputHelper.readString("Enter second hero name: ");
+        Hero h2 = gdm.getHero(name2);
+        if (h2 == null) {
+            System.out.println("Hero '" + name2 + "' not found.");
+            return;
+        }
+
+        System.out.println("\n--- Equipment Recommendations for " + h1.getName() + " ---");
+        List<Equipment> rec1 = extraService.recommendEquipment(h1);
+        if (rec1.isEmpty()) {
+            System.out.println("No matching equipment recommendations.");
+        } else {
+            for (int i = 0; i < rec1.size(); i++) {
+                Equipment eq = rec1.get(i);
+                System.out.println((i + 1) + ". " + eq.getName() + " (" + eq.getType() + ") - " + eq.getStatBonus());
+            }
+        }
+
+        System.out.println("\n--- Equipment Recommendations for " + h2.getName() + " ---");
+        List<Equipment> rec2 = extraService.recommendEquipment(h2);
+        if (rec2.isEmpty()) {
+            System.out.println("No matching equipment recommendations.");
+        } else {
+            for (int i = 0; i < rec2.size(); i++) {
+                Equipment eq = rec2.get(i);
+                System.out.println((i + 1) + ". " + eq.getName() + " (" + eq.getType() + ") - " + eq.getStatBonus());
+            }
+        }
+
+        System.out.println("\nPress Enter to start the 1v1 battle...");
+        InputHelper.readString("");
+        extraService.simulateCombat(h1, h2);
     }
 }

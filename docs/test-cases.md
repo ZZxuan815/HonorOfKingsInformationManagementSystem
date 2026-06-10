@@ -1,0 +1,169 @@
+# Test Cases — Honor of Kings Information Management System
+
+---
+
+## T01: Login Authentication (Admin)
+
+| Field | Value |
+|-------|-------|
+| **ID** | T01 |
+| **Function** | Login Authentication — Admin user |
+| **Input** | ID: `A001`, Password: `admin123` |
+| **Expected** | "Welcome, AdminZhang!" displayed, Admin Menu shown |
+| **Actual** | "Welcome, AdminZhang!" followed by Admin Menu with 12 options |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T02: Login Authentication (Invalid Credentials)
+
+| Field | Value |
+|-------|-------|
+| **ID** | T02 |
+| **Function** | Login Authentication — Invalid credentials |
+| **Input** | ID: `WRONG`, Password: `wrongpass` |
+| **Expected** | "Invalid credentials. Please try again." and stay on login screen |
+| **Actual** | "Invalid credentials. Please try again." — returns to login prompt |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T03: Player Leaderboard Sorting
+
+| Field | Value |
+|-------|-------|
+| **ID** | T03 |
+| **Function** | Player Leaderboard — verify descending score with alphabetical tie-break |
+| **Input** | Login as Player (ID: `P001`, Password: `pass123`) → Option 5 (View player leaderboard) |
+| **Expected** | Sorted by `(winRate*100)+level` descending. Ties (e.g., Li Bai score=103 vs Mo Ye score=103) sorted alphabetically by name |
+| **Actual** | Han Xin (127), Lu Bu (126), Cao Cao (114), Li Bai (103), Mo Ye (103) — correct order |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T04: Equipment Statistics (Empty Data)
+
+| Field | Value |
+|-------|-------|
+| **ID** | T04 |
+| **Function** | Equipment Statistics — all scores are 0.0 due to unpopulated usage data |
+| **Input** | Login as Admin → Option 10 (View equipment statistics) |
+| **Expected** | All equipment displayed with Score = 0.00, sorted alphabetically (all ties) |
+| **Actual** | 20 equipment items listed, all scores 0.00, sorted alphabetically by name |
+| **Result** | PASS |
+| **Bug Found** | None — `usageCount` and `winRateContribution` are 0 by default; no data update mechanism exists yet. |
+
+---
+
+## T05: Global Search (Case-Insensitive)
+
+| Field | Value |
+|-------|-------|
+| **ID** | T05 |
+| **Function** | Global Search — case-insensitive keyword matching across entities |
+| **Input** | Login as Admin → Option 11 → Keyword: `li` |
+| **Expected** | Returns Players/Heroes/Equipment/Teams/MatchRecords whose fields contain "li" (case-insensitive) |
+| **Actual** | Found Li Bai (Player), Li Bai (Hero), Bai Li Shou Yue (Hero), plus relevant Equipment and MatchRecords |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T06: Player Self-Profile Edit
+
+| Field | Value |
+|-------|-------|
+| **ID** | T06 |
+| **Function** | Player self-profile edit — update level, win rate, owned heroes |
+| **Input** | Login as Player `P001` (Li Bai) → Option 7 → New level: `50` → New win rate: `85` → Owned heroes: `Li Bai,Zhao Yun` |
+| **Expected** | "Profile updated successfully." Level changes from 35 to 50, win rate from 68% to 85%, owned heroes updated |
+| **Actual** | Profile updated. Re-login and view player info confirms Level=50, Win Rate=85%, Owned Heroes=[Li Bai, Zhao Yun] |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T07: Admin Add Hero
+
+| Field | Value |
+|-------|-------|
+| **ID** | T07 |
+| **Function** | Admin — add new hero |
+| **Input** | Login as Admin → Hero Management → Add new hero → Name: `Ying Zheng` → Type: `MAGE` |
+| **Expected** | "Hero added successfully." Hero appears in "View all heroes" list. Data persisted to `data.ser`. |
+| **Actual** | Hero added. Visible in View all heroes. File created/updated. |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T08: Admin Delete Player
+
+| Field | Value |
+|-------|-------|
+| **ID** | T08 |
+| **Function** | Admin — delete existing player |
+| **Input** | Login as Admin → Player Management → Delete player → ID: `P001` |
+| **Expected** | "Player deleted successfully." Player P001 no longer appears in view/list. Data persisted. |
+| **Actual** | Player deleted. View player info for P001 returns "Player not found." |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T09: Admin Add Duplicate Team
+
+| Field | Value |
+|-------|-------|
+| **ID** | T09 |
+| **Function** | Admin — duplicate team ID detection |
+| **Input** | Login as Admin → Team Management → Add new team → ID: `T01` → Name: `Duplicate` |
+| **Expected** | "Team ID already exists." No duplicate added. |
+| **Actual** | "Team ID already exists." T01 remains unchanged. |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T10: File Persistence (Save/Load)
+
+| Field | Value |
+|-------|-------|
+| **ID** | T10 |
+| **Function** | File persistence — data survives application restart |
+| **Input** | 1. Login as Admin → Add hero "TestHero" → Logout → Exit (2) 2. Restart app 3. Login as Admin → View all heroes |
+| **Expected** | "TestHero" still appears in the hero list after restart. `data.ser` file exists on disk. |
+| **Actual** | Hero list includes "TestHero" after restart. `data.ser` file present and non-empty. |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T11: Equipment Recommendation Verification
+
+| Field | Value |
+|-------|-------|
+| **ID** | T11 |
+| **Function** | Equipment Recommendation — verify MAGE hero gets magic-type equipment recommended |
+| **Input** | Login as Player → Option 8 (HOK Arena) → First hero: `Diao Chan` (MAGE) → Second hero: `Lu Bu` (WARRIOR) |
+| **Expected** | Diao Chan receives magic/mana equipment (e.g., Book of Sages). Lu Bu receives attack/crit weapons. Both see top 3 recommendations. |
+| **Actual** | Diao Chan recommended: Book of Sages, Boots of Resistance, Frozen Staff. Lu Bu recommended: Shadow Blade, Endless Blade, Bloodthirsty Blade. |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T12: 1v1 Combat Simulation Loop Verification
+
+| Field | Value |
+|-------|-------|
+| **ID** | T12 |
+| **Function** | 1v1 Combat Simulation — verify turn-based battle loop runs, critical strikes (20%) and dodges (15%) trigger, and a winner is declared |
+| **Input** | Login as Admin → Option 12 (HOK Arena) → First hero: `Li Bai` → Second hero: `Han Xin` → Press Enter to start battle |
+| **Expected** | Multi-round battle log printed. Each round shows damage dealt, critical strike messages ("CRITICAL!"), dodge messages ("dodged the attack!"). One hero's HP reaches zero and a winner is declared. |
+| **Actual** | Battle ran for 6 rounds with critical hits and dodges triggering. Winner: Han Xin declared. Full step-by-step action log printed. |
+| **Result** | PASS |
+| **Bug Found** | None |
