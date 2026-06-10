@@ -840,9 +840,12 @@ public class HonorOfKingsApp {
         System.out.println("\nDo you want to run the combat in:");
         System.out.println("[1] Classic Terminal Mode");
         System.out.println("[2] Dynamic Windows GUI Mode");
-        int mode = InputHelper.readIntRange("Enter your choice: ", 1, 2);
+        System.out.println("[3] Trigger Automated Global Tournament & Export Report");
+        int mode = InputHelper.readIntRange("Enter your choice: ", 1, 3);
 
-        if (mode == 2) {
+        if (mode == 3) {
+            extraService.runAutomatedTournament();
+        } else if (mode == 2) {
             extraService.simulateGraphicalCombat(h1, h2);
         } else {
             System.out.println("\nPress Enter to start the 1v1 battle...");

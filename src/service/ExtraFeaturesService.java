@@ -1,6 +1,13 @@
 package service;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -224,5 +231,142 @@ public class ExtraFeaturesService {
               + "      THE CHAMPION: " + winner + "!\n"
               + "====================================",
                 "Battle Over!", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private String silentSimulateCombat(Hero h1, Hero h2) {
+        Map<String, Integer> stats1 = h1.getBaseStats();
+        Map<String, Integer> stats2 = h2.getBaseStats();
+
+        int hp1 = stats1.getOrDefault("hp", 3000);
+        int hp2 = stats2.getOrDefault("hp", 3000);
+        int atk1 = stats1.getOrDefault("attack", 150);
+        int atk2 = stats2.getOrDefault("attack", 150);
+        int def1 = stats1.getOrDefault("defense", 100);
+        int def2 = stats2.getOrDefault("defense", 100);
+
+        while (hp1 > 0 && hp2 > 0) {
+            int dmg1 = atk1 + random.nextInt(20) - 10;
+            boolean crit1 = random.nextDouble() < 0.20;
+            boolean dodge2 = random.nextDouble() < 0.15;
+
+            if (crit1) dmg1 = (int)(dmg1 * 1.5);
+
+            if (!dodge2) {
+                dmg1 = Math.max(dmg1 - def2 / 4, 5);
+                hp2 -= dmg1;
+            }
+
+            if (hp2 <= 0) break;
+
+            int dmg2 = atk2 + random.nextInt(20) - 10;
+            boolean crit2 = random.nextDouble() < 0.20;
+            boolean dodge1 = random.nextDouble() < 0.15;
+
+            if (crit2) dmg2 = (int)(dmg2 * 1.5);
+
+            if (!dodge1) {
+                dmg2 = Math.max(dmg2 - def1 / 4, 5);
+                hp1 -= dmg2;
+            }
+        }
+
+        return hp1 > 0 ? h1.getName() : h2.getName();
+    }
+
+    public void runAutomatedTournament() {
+        List<Hero> allHeroes = new ArrayList<>(dataManager.getAllHeroes());
+
+        if (allHeroes.size() < 2) {
+            System.out.println("Not enough heroes to run a tournament (need at least 2).");
+            return;
+        }
+
+        int totalMatches = Math.max(10, allHeroes.size() * (allHeroes.size() - 1));
+        System.out.println("\nRunning automated tournament with " + allHeroes.size()
+                + " heroes across " + totalMatches + " matches...");
+
+        Map<String, Integer> winCount = new HashMap<>();
+        Map<String, Integer> matchCount = new HashMap<>();
+        for (Hero h : allHeroes) {
+            winCount.put(h.getName(), 0);
+            matchCount.put(h.getName(), 0);
+        }
+
+        List<String> matchLog = new ArrayList<>();
+
+        for (int i = 0; i < totalMatches; i++) {
+            Hero h1 = allHeroes.get(random.nextInt(allHeroes.size()));
+            Hero h2 = allHeroes.get(random.nextInt(allHeroes.size()));
+
+            while (h1.getName().equals(h2.getName())) {
+                h2 = allHeroes.get(random.nextInt(allHeroes.size()));
+            }
+
+            String winner = silentSimulateCombat(h1, h2);
+            winCount.put(winner, winCount.get(winner) + 1);
+            matchCount.put(h1.getName(), matchCount.get(h1.getName()) + 1);
+            matchCount.put(h2.getName(), matchCount.get(h2.getName()) + 1);
+
+            matchLog.add(String.format("Match %3d: %s vs %s -> Winner: %s", (i + 1), h1.getName(), h2.getName(), winner));
+        }
+
+        List<String> sortedHeroes = new ArrayList<>(allHeroes.size());
+        for (Hero h : allHeroes) {
+            sortedHeroes.add(h.getName());
+        }
+        Collections.sort(sortedHeroes, new Comparator<String>() {
+            @Override
+            public int compare(String a, String b) {
+                double wrA = matchCount.get(a) > 0 ? (double) winCount.get(a) / matchCount.get(a) : 0.0;
+                double wrB = matchCount.get(b) > 0 ? (double) winCount.get(b) / matchCount.get(b) : 0.0;
+                if (wrA > wrB) return -1;
+                if (wrA < wrB) return 1;
+                return a.compareTo(b);
+            }
+        });
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter("./tournament_report.txt"))) {
+            pw.println("========================================================================");
+            pw.println("  HONOR OF KINGS — AUTOMATED TOURNAMENT REPORT");
+            pw.println("  Date: June 2026 | Coursework Submission");
+            pw.println("========================================================================");
+            pw.println();
+            pw.println("Total Heroes: " + allHeroes.size());
+            pw.println("Total Matches Simulated: " + totalMatches);
+            pw.println();
+
+            pw.println("------------------------------------------------------------------------");
+            pw.println("  MATCH OUTCOME LOG");
+            pw.println("------------------------------------------------------------------------");
+            for (String logLine : matchLog) {
+                pw.println("  " + logLine);
+            }
+            pw.println();
+
+            pw.println("------------------------------------------------------------------------");
+            pw.println("  HOK KING OF THE HILL — FINAL RANKINGS");
+            pw.println("------------------------------------------------------------------------");
+            pw.printf("%-4s %-22s %-8s %-8s %-12s%n", "Rank", "Hero Name", "Wins", "Matches", "Win Rate");
+            pw.println("------------------------------------------------------------------------");
+            int rank = 1;
+            for (String name : sortedHeroes) {
+                int w = winCount.get(name);
+                int m = matchCount.get(name);
+                double wr = m > 0 ? (double) w / m * 100.0 : 0.0;
+                pw.printf("%-4d %-22s %-8d %-8d %-10.2f%%%n", rank, name, w, m, wr);
+                rank++;
+            }
+            pw.println();
+            pw.println("========================================================================");
+            pw.println("  CHAMPION: " + sortedHeroes.get(0) + " with "
+                    + String.format("%.2f%%", matchCount.get(sortedHeroes.get(0)) > 0
+                            ? (double) winCount.get(sortedHeroes.get(0)) / matchCount.get(sortedHeroes.get(0)) * 100.0 : 0.0)
+                    + " win rate!");
+            pw.println("========================================================================");
+
+            System.out.println("SUCCESS: Global tournament simulation complete! Full analytics exported to 'tournament_report.txt'.");
+        } catch (IOException e) {
+            System.out.println("Error writing tournament report: " + e.getMessage());
+        }
     }
 }

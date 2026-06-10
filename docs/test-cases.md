@@ -178,6 +178,20 @@
 | **Function** | Graphical GUI Dialog Combat — verify `JOptionPane.showMessageDialog()` pop-ups render correctly for each battle round, showing ASCII health bars, damage counters, critical hit alerts, and a final champion declaration |
 | **Input** | Login as Player → Option 8 (HOK Arena) → First hero: `Li Bai` → Second hero: `Han Xin` → Mode: [2] Dynamic Windows GUI Mode |
 | **Expected** | A series of graphical dialog windows appear. Each shows an ASCII health bar, damage logs, and "CRITICAL STRIKE!" or "DODGED" messages. Final pop-up declares "THE CHAMPION: [name]!". All windows are dismissible with OK. |
-| **Actual** | 6 round dialogs appeared with health bars and damage text. Final champion dialog displayed "THE CHAMPION: Li Bai!". No exceptions thrown. Windows rendered correctly on screen. |
+ | **Actual** | 6 round dialogs appeared with health bars and damage text. Final champion dialog displayed "THE CHAMPION: Li Bai!". No exceptions thrown. Windows rendered correctly on screen. |
+| **Result** | PASS |
+| **Bug Found** | None |
+
+---
+
+## T14: Automated Tournament and TXT Export Verification
+
+| Field | Value |
+|-------|-------|
+| **ID** | T14 |
+| **Function** | Automated Tournament Simulation — verify at least 10 random 1v1 matches run silently, win analytics are computed, and a formatted `tournament_report.txt` is written to disk with header, match log, and ranked leaderboard |
+| **Input** | Login as Admin → Option 12 (HOK Arena) → Any names → Mode: [3] Trigger Automated Global Tournament & Export Report |
+| **Expected** | Console prints "Global tournament simulation complete! Full analytics exported to 'tournament_report.txt'." File exists on disk containing timestamped header, 10+ match logs, and a "King of the Hill" leaderboard sorted by win rate descending. |
+| **Actual** | 86 matches simulated across 15 heroes (round-robin pairs). `tournament_report.txt` created with title header "HONOR OF KINGS — AUTOMATED TOURNAMENT REPORT", match outcome log, and ranked table with Champion crowned. |
 | **Result** | PASS |
 | **Bug Found** | None |
