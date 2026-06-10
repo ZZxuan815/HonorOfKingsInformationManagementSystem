@@ -47,7 +47,7 @@ This system manages players, heroes, equipment, teams, and match records for Hon
 * **`Hero` (implements Serializable):** name, type (HeroType), baseStats (Map), compatibleEquipment (List of equipment name strings instead of raw object references).
 * **`Equipment` (implements Serializable):** name, type, statBonus, usageCount, winRateContribution.
 * **`Team` (implements Serializable):** teamId, name, memberIds (List of player ID strings), totalMatches, wins.
-* **`MatchRecord` (implements Serializable):** matchId, date (LocalDate), teamA, teamB, winner, heroPicks (Map of playerId→heroName).
+* **`MatchRecord` (implements Serializable):** matchId, date (String), teamA, teamB, winner, result (MatchResult), heroPicks (Map of playerId→heroName).
 
 ### Service Classes
 * **`GameDataManager`:** central in-memory storage (`Map<String, Player>`, `Map<String, Hero>`, etc.) + CRUD operations.

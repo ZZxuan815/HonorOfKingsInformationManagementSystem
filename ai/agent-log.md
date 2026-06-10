@@ -63,6 +63,6 @@ I made all final architectural and design decisions. Key manual changes:
 | Win rate validation (0–100 range) | The AI had no boundary check. I added it so users cannot enter negative or >100 win rates. |
 | Auto-save after every admin mutation | The AI generated the save/load service but did not wire it into the menus. I added `fileStorage.saveData(gdm)` manually after every add/update/delete. |
 | Git commit prefixes | I chose the prefix system (`[Human]`, `[AI-Architect]`, etc.) to make the history clear for the marker. |
-| Menu option numbering | I chose 9 options for Player Menu and 13 for Admin Menu to fit all required features plus the bonus arena. |
+| Menu option numbering | I chose 10 options for Player Menu and 14 for Admin Menu to fit all required features plus the bonus arena. |
 | Added GUI combat option | I wanted to try the extra credit GUI feature, so I added a `JOptionPane` version of the combat simulator. |
 | Added automated tournament | I thought it would be a good way to demonstrate file writing and random simulation together. |

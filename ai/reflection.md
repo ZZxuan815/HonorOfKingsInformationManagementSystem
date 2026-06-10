@@ -52,12 +52,13 @@ Overall, AI was a useful assistant, but it did not replace thinking. The time sa
 
 ## Q9: Which parts of the final project were mainly written by you?
 
-- **The main menu loop and all menu handlers** in `HonorOfKingsApp.java` (about 850 lines). I designed the menu structure, option numbering, and routing logic myself.
+- **The overall architecture and menu flow** — I designed the menu structure, option numbering, role routing, and feature layout.
 - **All admin CRUD sub-menus** (hero management, equipment management, player management, team management, match management).
 - **The `DataInitializer`** with all the hardcoded game data — heroes, equipment, players, teams, and match records.
 - **Auto-save logic** — connecting `FileStorageService` to every mutation point.
-- **Test cases** — I wrote all 14 test cases based on what I actually tested.
+- **Test cases** — I wrote all 16 test cases based on what I actually tested.
 - **Plan.md, prompts.md, agent-log.md, and this reflection** — AI helped format, but the content and decisions are mine.
+- **Core view/menu methods** — `viewMatchHistory`, `viewHeroDetails`, `viewPlayerLeaderboard`, and the leaderboard sorting submenu were refined with AI assistance, and I manually integrated and verified their output.
 
 ## Q10: Which parts were mainly generated or heavily assisted by AI?
 
