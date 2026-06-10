@@ -837,8 +837,17 @@ public class HonorOfKingsApp {
             }
         }
 
-        System.out.println("\nPress Enter to start the 1v1 battle...");
-        InputHelper.readString("");
-        extraService.simulateCombat(h1, h2);
+        System.out.println("\nDo you want to run the combat in:");
+        System.out.println("[1] Classic Terminal Mode");
+        System.out.println("[2] Dynamic Windows GUI Mode");
+        int mode = InputHelper.readIntRange("Enter your choice: ", 1, 2);
+
+        if (mode == 2) {
+            extraService.simulateGraphicalCombat(h1, h2);
+        } else {
+            System.out.println("\nPress Enter to start the 1v1 battle...");
+            InputHelper.readString("");
+            extraService.simulateCombat(h1, h2);
+        }
     }
 }

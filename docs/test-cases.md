@@ -167,3 +167,17 @@
 | **Actual** | Battle ran for 6 rounds with critical hits and dodges triggering. Winner: Han Xin declared. Full step-by-step action log printed. |
 | **Result** | PASS |
 | **Bug Found** | None |
+
+---
+
+## T13: Graphical GUI Dialog Combat Verification
+
+| Field | Value |
+|-------|-------|
+| **ID** | T13 |
+| **Function** | Graphical GUI Dialog Combat — verify `JOptionPane.showMessageDialog()` pop-ups render correctly for each battle round, showing ASCII health bars, damage counters, critical hit alerts, and a final champion declaration |
+| **Input** | Login as Player → Option 8 (HOK Arena) → First hero: `Li Bai` → Second hero: `Han Xin` → Mode: [2] Dynamic Windows GUI Mode |
+| **Expected** | A series of graphical dialog windows appear. Each shows an ASCII health bar, damage logs, and "CRITICAL STRIKE!" or "DODGED" messages. Final pop-up declares "THE CHAMPION: [name]!". All windows are dismissible with OK. |
+| **Actual** | 6 round dialogs appeared with health bars and damage text. Final champion dialog displayed "THE CHAMPION: Li Bai!". No exceptions thrown. Windows rendered correctly on screen. |
+| **Result** | PASS |
+| **Bug Found** | None |
