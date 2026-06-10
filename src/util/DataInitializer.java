@@ -218,6 +218,26 @@ public class DataInitializer {
         p10.setOwnedHeroes(Arrays.asList("Mo Ye", "Han Xin", "Li Bai"));
         gdm.addPlayer(p10);
 
+        Player p11 = new Player("P011", "Sun Shang Xiang", "pass888", 40, 0.75, "T01");
+        p11.setOwnedHeroes(Arrays.asList("Sun Shang Xiang", "Hou Yi", "Zhao Yun"));
+        gdm.addPlayer(p11);
+
+        Player p12 = new Player("P012", "Zhu Ge Liang", "pass999", 36, 0.62, "T02");
+        p12.setOwnedHeroes(Arrays.asList("Zhu Ge Liang", "Diao Chan", "An Qi La"));
+        gdm.addPlayer(p12);
+
+        Player p13 = new Player("P013", "Lian Po", "pass000", 44, 0.58, "T02");
+        p13.setOwnedHeroes(Arrays.asList("Lian Po", "Ya Se", "Cai Wen Ji"));
+        gdm.addPlayer(p13);
+
+        Player p14 = new Player("P014", "Cai Wen Ji", "passaaa", 32, 0.48, "T03");
+        p14.setOwnedHeroes(Arrays.asList("Cai Wen Ji", "Sun Bin", "Diao Chan"));
+        gdm.addPlayer(p14);
+
+        Player p15 = new Player("P015", "Li Yuan Fang", "passbbb", 38, 0.66, "T03");
+        p15.setOwnedHeroes(Arrays.asList("Li Yuan Fang", "Bai Li Shou Yue", "Sun Shang Xiang"));
+        gdm.addPlayer(p15);
+
         Admin admin1 = new Admin("A001", "AdminZhang", "admin123", "super_admin");
         gdm.addAdmin(admin1);
 
@@ -227,21 +247,21 @@ public class DataInitializer {
 
     private static void initTeams(GameDataManager gdm) {
         Team t1 = new Team("T01", "Dragon Legion");
-        t1.setMemberIds(Arrays.asList("P001", "P002", "P003", "P010"));
-        t1.setTotalMatches(50);
-        t1.setWins(32);
+        t1.setMemberIds(Arrays.asList("P001", "P002", "P003", "P010", "P011"));
+        t1.setTotalMatches(75);
+        t1.setWins(48);
         gdm.addTeam(t1);
 
         Team t2 = new Team("T02", "Phoenix Rising");
-        t2.setMemberIds(Arrays.asList("P004", "P005", "P006"));
-        t2.setTotalMatches(40);
-        t2.setWins(22);
+        t2.setMemberIds(Arrays.asList("P004", "P005", "P006", "P012", "P013"));
+        t2.setTotalMatches(70);
+        t2.setWins(38);
         gdm.addTeam(t2);
 
         Team t3 = new Team("T03", "Tiger Guard");
-        t3.setMemberIds(Arrays.asList("P007", "P008", "P009"));
-        t3.setTotalMatches(45);
-        t3.setWins(28);
+        t3.setMemberIds(Arrays.asList("P007", "P008", "P009", "P014", "P015"));
+        t3.setTotalMatches(65);
+        t3.setWins(35);
         gdm.addTeam(t3);
     }
 
