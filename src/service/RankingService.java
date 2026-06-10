@@ -16,10 +16,12 @@ public class RankingService {
         this.dataManager = dataManager;
     }
 
+    // Returns default ranking (custom score) — delegates to sortMode version
     public List<Player> getPlayerRanking() {
         return getPlayerRanking(1);
     }
 
+    // Returns players sorted by chosen criteria with alphabetical tie-breaking
     public List<Player> getPlayerRanking(int sortMode) {
         List<Player> players = new ArrayList<>(dataManager.getAllPlayers());
         Collections.sort(players, new Comparator<Player>() {
@@ -50,6 +52,7 @@ public class RankingService {
         return players;
     }
 
+    // Counts how many match records include this player by heroPicks
     public int countMatchesForPlayer(String playerId) {
         int count = 0;
         for (var m : dataManager.getAllMatchRecords()) {
@@ -60,6 +63,7 @@ public class RankingService {
         return count;
     }
 
+    // Returns equipment sorted by usageCount * winRateContribution descending with alphabetical tie-breaking
     public List<Equipment> getEquipmentRanking() {
         List<Equipment> equipment = new ArrayList<>(dataManager.getAllEquipment());
         Collections.sort(equipment, new Comparator<Equipment>() {

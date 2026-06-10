@@ -29,6 +29,7 @@ public class GameDataManager {
         return players.get(id);
     }
 
+    // Removes player and removes their ID from their team's member list
     public Player removePlayer(String id) {
         Player player = players.remove(id);
         if (player != null) {
@@ -55,6 +56,7 @@ public class GameDataManager {
         return heroes.get(name);
     }
 
+    // Removes hero and cascades deletion to all players' ownedHeroes and equippedItems
     public Hero removeHero(String name) {
         Hero hero = heroes.remove(name);
         if (hero != null) {
@@ -94,6 +96,7 @@ public class GameDataManager {
         return teams.get(teamId);
     }
 
+    // Removes team and resets teamId for all former members to empty string
     public Team removeTeam(String teamId) {
         Team team = teams.remove(teamId);
         if (team != null) {
