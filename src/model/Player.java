@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player extends Person {
+public class Player extends Person implements Searchable {
     private static final long serialVersionUID = 1L;
 
     private int level;
@@ -54,6 +54,17 @@ public class Player extends Person {
 
     public void setOwnedHeroes(List<String> ownedHeroes) {
         this.ownedHeroes = ownedHeroes;
+    }
+
+    @Override
+    public boolean matches(String keyword) {
+        String kw = keyword.toLowerCase();
+        if (getId().toLowerCase().contains(kw)) return true;
+        if (getName().toLowerCase().contains(kw)) return true;
+        for (String hero : ownedHeroes) {
+            if (hero.toLowerCase().contains(kw)) return true;
+        }
+        return false;
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Hero implements Serializable {
+public class Hero implements Serializable, Searchable {
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -56,6 +56,17 @@ public class Hero implements Serializable {
 
     public void setCompatibleEquipment(List<String> compatibleEquipment) {
         this.compatibleEquipment = compatibleEquipment;
+    }
+
+    @Override
+    public boolean matches(String keyword) {
+        String kw = keyword.toLowerCase();
+        if (name.toLowerCase().contains(kw)) return true;
+        if (type.name().toLowerCase().contains(kw)) return true;
+        for (String eq : compatibleEquipment) {
+            if (eq.toLowerCase().contains(kw)) return true;
+        }
+        return false;
     }
 
     @Override

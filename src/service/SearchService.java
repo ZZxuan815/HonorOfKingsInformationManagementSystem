@@ -1,7 +1,13 @@
 package service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Equipment;
 import model.Hero;
+import model.MatchRecord;
 import model.Player;
+import model.Searchable;
 import model.Team;
 
 public class SearchService {
@@ -59,5 +65,26 @@ public class SearchService {
             }
         }
         return null;
+    }
+
+    public List<Searchable> search(String keyword) {
+        List<Searchable> results = new ArrayList<>();
+        String lowerKw = keyword.toLowerCase();
+        for (Player p : dataManager.getAllPlayers()) {
+            if (p.matches(lowerKw)) results.add(p);
+        }
+        for (Hero h : dataManager.getAllHeroes()) {
+            if (h.matches(lowerKw)) results.add(h);
+        }
+        for (Equipment e : dataManager.getAllEquipment()) {
+            if (e.matches(lowerKw)) results.add(e);
+        }
+        for (Team t : dataManager.getAllTeams()) {
+            if (t.matches(lowerKw)) results.add(t);
+        }
+        for (MatchRecord m : dataManager.getAllMatchRecords()) {
+            if (m.matches(lowerKw)) results.add(m);
+        }
+        return results;
     }
 }

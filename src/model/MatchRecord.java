@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MatchRecord implements Serializable {
+public class MatchRecord implements Serializable, Searchable {
     private static final long serialVersionUID = 1L;
 
     private String matchId;
@@ -73,6 +73,16 @@ public class MatchRecord implements Serializable {
 
     public void setHeroPicks(Map<String, String> heroPicks) {
         this.heroPicks = heroPicks;
+    }
+
+    @Override
+    public boolean matches(String keyword) {
+        String kw = keyword.toLowerCase();
+        if (matchId.toLowerCase().contains(kw)) return true;
+        if (teamA.toLowerCase().contains(kw)) return true;
+        if (teamB.toLowerCase().contains(kw)) return true;
+        if (winner.toLowerCase().contains(kw)) return true;
+        return false;
     }
 
     @Override

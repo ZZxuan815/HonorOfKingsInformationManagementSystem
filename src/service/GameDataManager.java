@@ -101,6 +101,24 @@ public class GameDataManager {
         matches.add(record);
     }
 
+    public MatchRecord getMatchRecord(String matchId) {
+        for (MatchRecord m : matches) {
+            if (m.getMatchId().equals(matchId)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public MatchRecord removeMatchRecord(String matchId) {
+        for (int i = 0; i < matches.size(); i++) {
+            if (matches.get(i).getMatchId().equals(matchId)) {
+                return matches.remove(i);
+            }
+        }
+        return null;
+    }
+
     public List<MatchRecord> getAllMatchRecords() {
         return matches;
     }

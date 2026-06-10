@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Equipment implements Serializable {
+public class Equipment implements Serializable, Searchable {
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -60,6 +60,15 @@ public class Equipment implements Serializable {
 
     public void setWinRateContribution(double winRateContribution) {
         this.winRateContribution = winRateContribution;
+    }
+
+    @Override
+    public boolean matches(String keyword) {
+        String kw = keyword.toLowerCase();
+        if (name.toLowerCase().contains(kw)) return true;
+        if (type.toLowerCase().contains(kw)) return true;
+        if (statBonus.toLowerCase().contains(kw)) return true;
+        return false;
     }
 
     @Override

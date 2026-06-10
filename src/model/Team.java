@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Team implements Serializable {
+public class Team implements Serializable, Searchable {
     private static final long serialVersionUID = 1L;
 
     private String teamId;
@@ -63,6 +63,17 @@ public class Team implements Serializable {
 
     public void setWins(int wins) {
         this.wins = wins;
+    }
+
+    @Override
+    public boolean matches(String keyword) {
+        String kw = keyword.toLowerCase();
+        if (teamId.toLowerCase().contains(kw)) return true;
+        if (name.toLowerCase().contains(kw)) return true;
+        for (String member : memberIds) {
+            if (member.toLowerCase().contains(kw)) return true;
+        }
+        return false;
     }
 
     @Override

@@ -1,21 +1,36 @@
 package main;
 
+import java.util.List;
+
 import model.Equipment;
 import model.Hero;
 import model.HeroType;
+import model.MatchRecord;
+import model.Person;
 import model.Player;
+import model.Searchable;
+import model.Team;
 import service.AuthenticationService;
+import service.FileStorageService;
 import service.GameDataManager;
 import service.RankingService;
+import service.SearchService;
 import util.DataInitializer;
 import util.InputHelper;
 
 public class HonorOfKingsApp {
     public static void main(String[] args) {
-        GameDataManager gdm = new GameDataManager();
-        DataInitializer.init(gdm);
+        FileStorageService fileStorage = new FileStorageService();
+        GameDataManager gdm = fileStorage.loadData();
+        if (gdm == null) {
+            gdm = new GameDataManager();
+            DataInitializer.init(gdm);
+            System.out.println("Initialized with default data.");
+        }
+
         AuthenticationService authService = new AuthenticationService(gdm);
         RankingService rankingService = new RankingService(gdm);
+        SearchService searchService = new SearchService(gdm);
 
         while (true) {
             System.out.println("\n=== Honor of Kings - Login ===");
@@ -25,6 +40,7 @@ public class HonorOfKingsApp {
             int choice = InputHelper.readIntRange("Enter your choice: ", 1, 2);
 
             if (choice == 2) {
+                fileStorage.saveData(gdm);
                 System.out.println("Thank you for using the system. Goodbye!");
                 break;
             }
@@ -40,9 +56,9 @@ public class HonorOfKingsApp {
             System.out.println("Welcome, " + authService.getCurrentUser().getName() + "!");
 
             if (authService.isAdmin()) {
-                runAdminMenu(gdm, rankingService, authService);
+                runAdminMenu(gdm, rankingService, searchService, authService, fileStorage);
             } else {
-                runPlayerMenu(gdm, rankingService);
+                runPlayerMenu(gdm, rankingService, authService, fileStorage);
             }
 
             authService.logout();
@@ -52,7 +68,8 @@ public class HonorOfKingsApp {
 
     // ===================== PLAYER MENU =====================
 
-    private static void runPlayerMenu(GameDataManager gdm, RankingService rankingService) {
+    private static void runPlayerMenu(GameDataManager gdm, RankingService rankingService,
+                                       AuthenticationService authService, FileStorageService fileStorage) {
         while (true) {
             System.out.println("\n=== Player Menu ===");
             System.out.println("1. View all heroes");
@@ -61,9 +78,10 @@ public class HonorOfKingsApp {
             System.out.println("4. View player info");
             System.out.println("5. View player leaderboard");
             System.out.println("6. View equipment statistics");
-            System.out.println("7. Logout");
+            System.out.println("7. Edit my profile");
+            System.out.println("8. Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 7);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 8);
 
             switch (choice) {
                 case 1:
@@ -85,11 +103,58 @@ public class HonorOfKingsApp {
                     viewEquipmentStatistics(rankingService);
                     break;
                 case 7:
+                    editMyProfile(gdm, authService, fileStorage);
+                    break;
+                case 8:
                     return;
                 default:
                     System.out.println("Invalid option.");
             }
         }
+    }
+
+    private static void editMyProfile(GameDataManager gdm, AuthenticationService authService,
+                                       FileStorageService fileStorage) {
+        Person currentUser = authService.getCurrentUser();
+        if (!(currentUser instanceof Player)) {
+            System.out.println("Only players can edit their profile.");
+            return;
+        }
+        Player player = (Player) currentUser;
+        System.out.println("\n--- Edit My Profile ---");
+        System.out.println("Current Level: " + player.getLevel());
+        String levelStr = InputHelper.readString("Enter new level (or press Enter to skip): ");
+        if (!levelStr.isEmpty()) {
+            try {
+                player.setLevel(Integer.parseInt(levelStr));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Keeping original.");
+            }
+        }
+
+        System.out.println("Current Win Rate: " + (player.getWinRate() * 100) + "%");
+        String wrStr = InputHelper.readString("Enter new win rate (0-100, or press Enter to skip): ");
+        if (!wrStr.isEmpty()) {
+            try {
+                double wr = Double.parseDouble(wrStr) / 100.0;
+                if (wr >= 0.0 && wr <= 1.0) {
+                    player.setWinRate(wr);
+                } else {
+                    System.out.println("Win rate must be between 0 and 100. Keeping original.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Keeping original.");
+            }
+        }
+
+        System.out.println("Current Owned Heroes: " + player.getOwnedHeroes());
+        String heroesStr = InputHelper.readString("Enter owned heroes (comma-separated, or press Enter to skip): ");
+        if (!heroesStr.isEmpty()) {
+            player.setOwnedHeroes(List.of(heroesStr.split(",")));
+        }
+
+        fileStorage.saveData(gdm);
+        System.out.println("Profile updated successfully.");
     }
 
     private static void viewAllHeroes(GameDataManager gdm) {
@@ -136,43 +201,62 @@ public class HonorOfKingsApp {
 
     // ===================== ADMIN MENU =====================
 
-    private static void runAdminMenu(GameDataManager gdm, RankingService rankingService, AuthenticationService authService) {
+    private static void runAdminMenu(GameDataManager gdm, RankingService rankingService,
+                                      SearchService searchService, AuthenticationService authService,
+                                      FileStorageService fileStorage) {
         while (true) {
             System.out.println("\n=== Admin Menu ===");
             System.out.println("1. Hero Management");
             System.out.println("2. Equipment Management");
-            System.out.println("3. View all heroes");
-            System.out.println("4. View all equipment");
-            System.out.println("5. View match records");
-            System.out.println("6. View player leaderboard");
-            System.out.println("7. View equipment statistics");
-            System.out.println("8. Logout");
+            System.out.println("3. Player Management");
+            System.out.println("4. Team Management");
+            System.out.println("5. Match Management");
+            System.out.println("6. View all heroes");
+            System.out.println("7. View all equipment");
+            System.out.println("8. View match records");
+            System.out.println("9. View player leaderboard");
+            System.out.println("10. View equipment statistics");
+            System.out.println("11. Global search");
+            System.out.println("12. Save & Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 8);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 12);
 
             switch (choice) {
                 case 1:
-                    runHeroManagement(gdm);
+                    runHeroManagement(gdm, fileStorage);
                     break;
                 case 2:
-                    runEquipmentManagement(gdm);
+                    runEquipmentManagement(gdm, fileStorage);
                     break;
                 case 3:
-                    viewAllHeroes(gdm);
+                    runPlayerManagement(gdm, fileStorage);
                     break;
                 case 4:
-                    viewAllEquipment(gdm);
+                    runTeamManagement(gdm, fileStorage);
                     break;
                 case 5:
-                    viewAllMatchRecords(gdm);
+                    runMatchManagement(gdm, fileStorage);
                     break;
                 case 6:
-                    viewPlayerLeaderboard(rankingService);
+                    viewAllHeroes(gdm);
                     break;
                 case 7:
-                    viewEquipmentStatistics(rankingService);
+                    viewAllEquipment(gdm);
                     break;
                 case 8:
+                    viewAllMatchRecords(gdm);
+                    break;
+                case 9:
+                    viewPlayerLeaderboard(rankingService);
+                    break;
+                case 10:
+                    viewEquipmentStatistics(rankingService);
+                    break;
+                case 11:
+                    globalSearch(searchService);
+                    break;
+                case 12:
+                    fileStorage.saveData(gdm);
                     return;
                 default:
                     System.out.println("Invalid option.");
@@ -180,7 +264,9 @@ public class HonorOfKingsApp {
         }
     }
 
-    private static void runHeroManagement(GameDataManager gdm) {
+    // ===================== HERO MANAGEMENT =====================
+
+    private static void runHeroManagement(GameDataManager gdm, FileStorageService fileStorage) {
         while (true) {
             System.out.println("\n--- Hero Management ---");
             System.out.println("1. Add new hero");
@@ -193,13 +279,13 @@ public class HonorOfKingsApp {
 
             switch (choice) {
                 case 1:
-                    addHero(gdm);
+                    addHero(gdm, fileStorage);
                     break;
                 case 2:
-                    updateHero(gdm);
+                    updateHero(gdm, fileStorage);
                     break;
                 case 3:
-                    deleteHero(gdm);
+                    deleteHero(gdm, fileStorage);
                     break;
                 case 4:
                     viewHeroDetails(gdm);
@@ -212,7 +298,7 @@ public class HonorOfKingsApp {
         }
     }
 
-    private static void addHero(GameDataManager gdm) {
+    private static void addHero(GameDataManager gdm, FileStorageService fileStorage) {
         String name = InputHelper.readString("Enter hero name: ");
         if (gdm.getHero(name) != null) {
             System.out.println("Hero already exists.");
@@ -228,10 +314,11 @@ public class HonorOfKingsApp {
         }
         Hero hero = new Hero(name, type);
         gdm.addHero(hero);
+        fileStorage.saveData(gdm);
         System.out.println("Hero added successfully.");
     }
 
-    private static void updateHero(GameDataManager gdm) {
+    private static void updateHero(GameDataManager gdm, FileStorageService fileStorage) {
         String name = InputHelper.readString("Enter hero name to update: ");
         Hero hero = gdm.getHero(name);
         if (hero == null) {
@@ -246,20 +333,24 @@ public class HonorOfKingsApp {
                 System.out.println("Invalid type. Keeping original.");
             }
         }
+        fileStorage.saveData(gdm);
         System.out.println("Hero updated successfully.");
     }
 
-    private static void deleteHero(GameDataManager gdm) {
+    private static void deleteHero(GameDataManager gdm, FileStorageService fileStorage) {
         String name = InputHelper.readString("Enter hero name to delete: ");
         Hero removed = gdm.removeHero(name);
         if (removed != null) {
+            fileStorage.saveData(gdm);
             System.out.println("Hero deleted successfully.");
         } else {
             System.out.println("Hero not found.");
         }
     }
 
-    private static void runEquipmentManagement(GameDataManager gdm) {
+    // ===================== EQUIPMENT MANAGEMENT =====================
+
+    private static void runEquipmentManagement(GameDataManager gdm, FileStorageService fileStorage) {
         while (true) {
             System.out.println("\n--- Equipment Management ---");
             System.out.println("1. Add new equipment");
@@ -272,13 +363,13 @@ public class HonorOfKingsApp {
 
             switch (choice) {
                 case 1:
-                    addEquipment(gdm);
+                    addEquipment(gdm, fileStorage);
                     break;
                 case 2:
-                    updateEquipment(gdm);
+                    updateEquipment(gdm, fileStorage);
                     break;
                 case 3:
-                    deleteEquipment(gdm);
+                    deleteEquipment(gdm, fileStorage);
                     break;
                 case 4:
                     viewEquipmentDetails(gdm);
@@ -291,7 +382,7 @@ public class HonorOfKingsApp {
         }
     }
 
-    private static void addEquipment(GameDataManager gdm) {
+    private static void addEquipment(GameDataManager gdm, FileStorageService fileStorage) {
         String name = InputHelper.readString("Enter equipment name: ");
         if (gdm.getEquipment(name) != null) {
             System.out.println("Equipment already exists.");
@@ -301,10 +392,11 @@ public class HonorOfKingsApp {
         String statBonus = InputHelper.readString("Enter stat bonus: ");
         Equipment eq = new Equipment(name, type, statBonus);
         gdm.addEquipment(eq);
+        fileStorage.saveData(gdm);
         System.out.println("Equipment added successfully.");
     }
 
-    private static void updateEquipment(GameDataManager gdm) {
+    private static void updateEquipment(GameDataManager gdm, FileStorageService fileStorage) {
         String name = InputHelper.readString("Enter equipment name to update: ");
         Equipment eq = gdm.getEquipment(name);
         if (eq == null) {
@@ -319,13 +411,15 @@ public class HonorOfKingsApp {
         if (!newBonus.isEmpty()) {
             eq.setStatBonus(newBonus);
         }
+        fileStorage.saveData(gdm);
         System.out.println("Equipment updated successfully.");
     }
 
-    private static void deleteEquipment(GameDataManager gdm) {
+    private static void deleteEquipment(GameDataManager gdm, FileStorageService fileStorage) {
         String name = InputHelper.readString("Enter equipment name to delete: ");
         Equipment removed = gdm.removeEquipment(name);
         if (removed != null) {
+            fileStorage.saveData(gdm);
             System.out.println("Equipment deleted successfully.");
         } else {
             System.out.println("Equipment not found.");
@@ -345,6 +439,299 @@ public class HonorOfKingsApp {
             System.out.println("Equipment not found.");
         }
     }
+
+    // ===================== PLAYER MANAGEMENT =====================
+
+    private static void runPlayerManagement(GameDataManager gdm, FileStorageService fileStorage) {
+        while (true) {
+            System.out.println("\n--- Player Management ---");
+            System.out.println("1. Add new player");
+            System.out.println("2. Update player");
+            System.out.println("3. Delete player");
+            System.out.println("4. View player details");
+            System.out.println("5. Back to admin menu");
+
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 5);
+
+            switch (choice) {
+                case 1:
+                    addPlayer(gdm, fileStorage);
+                    break;
+                case 2:
+                    updatePlayer(gdm, fileStorage);
+                    break;
+                case 3:
+                    deletePlayer(gdm, fileStorage);
+                    break;
+                case 4:
+                    viewPlayerInfo(gdm);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private static void addPlayer(GameDataManager gdm, FileStorageService fileStorage) {
+        String id = InputHelper.readString("Enter player ID: ");
+        if (gdm.getPlayer(id) != null) {
+            System.out.println("Player ID already exists.");
+            return;
+        }
+        String name = InputHelper.readString("Enter player name: ");
+        String password = InputHelper.readString("Enter password: ");
+        int level = InputHelper.readInt("Enter level: ");
+        double winRate = InputHelper.readInt("Enter win rate (0-100): ") / 100.0;
+        String teamId = InputHelper.readString("Enter team ID: ");
+        Player player = new Player(id, name, password, level, winRate, teamId);
+        gdm.addPlayer(player);
+        fileStorage.saveData(gdm);
+        System.out.println("Player added successfully.");
+    }
+
+    private static void updatePlayer(GameDataManager gdm, FileStorageService fileStorage) {
+        String id = InputHelper.readString("Enter player ID to update: ");
+        Player player = gdm.getPlayer(id);
+        if (player == null) {
+            System.out.println("Player not found.");
+            return;
+        }
+        String newName = InputHelper.readString("Enter new name (or press Enter to skip): ");
+        if (!newName.isEmpty()) {
+            player.setName(newName);
+        }
+        String newLevel = InputHelper.readString("Enter new level (or press Enter to skip): ");
+        if (!newLevel.isEmpty()) {
+            try {
+                player.setLevel(Integer.parseInt(newLevel));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Keeping original.");
+            }
+        }
+        String newWR = InputHelper.readString("Enter new win rate 0-100 (or press Enter to skip): ");
+        if (!newWR.isEmpty()) {
+            try {
+                player.setWinRate(Double.parseDouble(newWR) / 100.0);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Keeping original.");
+            }
+        }
+        fileStorage.saveData(gdm);
+        System.out.println("Player updated successfully.");
+    }
+
+    private static void deletePlayer(GameDataManager gdm, FileStorageService fileStorage) {
+        String id = InputHelper.readString("Enter player ID to delete: ");
+        Player removed = gdm.removePlayer(id);
+        if (removed != null) {
+            fileStorage.saveData(gdm);
+            System.out.println("Player deleted successfully.");
+        } else {
+            System.out.println("Player not found.");
+        }
+    }
+
+    // ===================== TEAM MANAGEMENT =====================
+
+    private static void runTeamManagement(GameDataManager gdm, FileStorageService fileStorage) {
+        while (true) {
+            System.out.println("\n--- Team Management ---");
+            System.out.println("1. Add new team");
+            System.out.println("2. Update team");
+            System.out.println("3. Delete team");
+            System.out.println("4. View team details");
+            System.out.println("5. Back to admin menu");
+
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 5);
+
+            switch (choice) {
+                case 1:
+                    addTeam(gdm, fileStorage);
+                    break;
+                case 2:
+                    updateTeam(gdm, fileStorage);
+                    break;
+                case 3:
+                    deleteTeam(gdm, fileStorage);
+                    break;
+                case 4:
+                    viewTeamDetails(gdm);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private static void addTeam(GameDataManager gdm, FileStorageService fileStorage) {
+        String teamId = InputHelper.readString("Enter team ID: ");
+        if (gdm.getTeam(teamId) != null) {
+            System.out.println("Team ID already exists.");
+            return;
+        }
+        String name = InputHelper.readString("Enter team name: ");
+        Team team = new Team(teamId, name);
+        gdm.addTeam(team);
+        fileStorage.saveData(gdm);
+        System.out.println("Team added successfully.");
+    }
+
+    private static void updateTeam(GameDataManager gdm, FileStorageService fileStorage) {
+        String teamId = InputHelper.readString("Enter team ID to update: ");
+        Team team = gdm.getTeam(teamId);
+        if (team == null) {
+            System.out.println("Team not found.");
+            return;
+        }
+        String newName = InputHelper.readString("Enter new name (or press Enter to skip): ");
+        if (!newName.isEmpty()) {
+            team.setName(newName);
+        }
+        String newMatches = InputHelper.readString("Enter new total matches (or press Enter to skip): ");
+        if (!newMatches.isEmpty()) {
+            try {
+                team.setTotalMatches(Integer.parseInt(newMatches));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Keeping original.");
+            }
+        }
+        String newWins = InputHelper.readString("Enter new wins (or press Enter to skip): ");
+        if (!newWins.isEmpty()) {
+            try {
+                team.setWins(Integer.parseInt(newWins));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Keeping original.");
+            }
+        }
+        fileStorage.saveData(gdm);
+        System.out.println("Team updated successfully.");
+    }
+
+    private static void deleteTeam(GameDataManager gdm, FileStorageService fileStorage) {
+        String teamId = InputHelper.readString("Enter team ID to delete: ");
+        Team removed = gdm.removeTeam(teamId);
+        if (removed != null) {
+            fileStorage.saveData(gdm);
+            System.out.println("Team deleted successfully.");
+        } else {
+            System.out.println("Team not found.");
+        }
+    }
+
+    private static void viewTeamDetails(GameDataManager gdm) {
+        String teamId = InputHelper.readString("Enter team ID: ");
+        Team team = gdm.getTeam(teamId);
+        if (team != null) {
+            System.out.println("\nTeam ID: " + team.getTeamId());
+            System.out.println("Name: " + team.getName());
+            System.out.println("Members: " + team.getMemberIds());
+            System.out.println("Total Matches: " + team.getTotalMatches());
+            System.out.println("Wins: " + team.getWins());
+        } else {
+            System.out.println("Team not found.");
+        }
+    }
+
+    // ===================== MATCH MANAGEMENT =====================
+
+    private static void runMatchManagement(GameDataManager gdm, FileStorageService fileStorage) {
+        while (true) {
+            System.out.println("\n--- Match Management ---");
+            System.out.println("1. Add new match record");
+            System.out.println("2. Update match record");
+            System.out.println("3. Delete match record");
+            System.out.println("4. View match details");
+            System.out.println("5. Back to admin menu");
+
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 5);
+
+            switch (choice) {
+                case 1:
+                    addMatchRecord(gdm, fileStorage);
+                    break;
+                case 2:
+                    updateMatchRecord(gdm, fileStorage);
+                    break;
+                case 3:
+                    deleteMatchRecord(gdm, fileStorage);
+                    break;
+                case 4:
+                    viewMatchDetails(gdm);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private static void addMatchRecord(GameDataManager gdm, FileStorageService fileStorage) {
+        String matchId = InputHelper.readString("Enter match ID: ");
+        if (gdm.getMatchRecord(matchId) != null) {
+            System.out.println("Match ID already exists.");
+            return;
+        }
+        String date = InputHelper.readString("Enter date (e.g. 2026-06-10): ");
+        String teamA = InputHelper.readString("Enter team A ID: ");
+        String teamB = InputHelper.readString("Enter team B ID: ");
+        String winner = InputHelper.readString("Enter winner team ID: ");
+        MatchRecord match = new MatchRecord(matchId, date, teamA, teamB, winner);
+        gdm.addMatchRecord(match);
+        fileStorage.saveData(gdm);
+        System.out.println("Match record added successfully.");
+    }
+
+    private static void updateMatchRecord(GameDataManager gdm, FileStorageService fileStorage) {
+        String matchId = InputHelper.readString("Enter match ID to update: ");
+        MatchRecord match = gdm.getMatchRecord(matchId);
+        if (match == null) {
+            System.out.println("Match not found.");
+            return;
+        }
+        String newDate = InputHelper.readString("Enter new date (or press Enter to skip): ");
+        if (!newDate.isEmpty()) {
+            match.setDate(newDate);
+        }
+        String newWinner = InputHelper.readString("Enter new winner team ID (or press Enter to skip): ");
+        if (!newWinner.isEmpty()) {
+            match.setWinner(newWinner);
+        }
+        fileStorage.saveData(gdm);
+        System.out.println("Match record updated successfully.");
+    }
+
+    private static void deleteMatchRecord(GameDataManager gdm, FileStorageService fileStorage) {
+        String matchId = InputHelper.readString("Enter match ID to delete: ");
+        MatchRecord removed = gdm.removeMatchRecord(matchId);
+        if (removed != null) {
+            fileStorage.saveData(gdm);
+            System.out.println("Match record deleted successfully.");
+        } else {
+            System.out.println("Match not found.");
+        }
+    }
+
+    private static void viewMatchDetails(GameDataManager gdm) {
+        String matchId = InputHelper.readString("Enter match ID: ");
+        MatchRecord match = gdm.getMatchRecord(matchId);
+        if (match != null) {
+            System.out.println("\nMatch ID: " + match.getMatchId());
+            System.out.println("Date: " + match.getDate());
+            System.out.println("Team A: " + match.getTeamA());
+            System.out.println("Team B: " + match.getTeamB());
+            System.out.println("Winner: " + match.getWinner());
+            System.out.println("Hero Picks: " + match.getHeroPicks());
+        } else {
+            System.out.println("Match not found.");
+        }
+    }
+
+    // ===================== SHARED VIEW METHODS =====================
 
     private static void viewAllMatchRecords(GameDataManager gdm) {
         System.out.println("\n=== Match Records ===");
@@ -382,5 +769,19 @@ public class HonorOfKingsApp {
                     rank, eq.getName(), score, eq.getUsageCount(), eq.getWinRateContribution());
             rank++;
         }
+    }
+
+    private static void globalSearch(SearchService searchService) {
+        String keyword = InputHelper.readString("Enter search keyword: ");
+        List<Searchable> results = searchService.search(keyword);
+        if (results.isEmpty()) {
+            System.out.println("No results found for '" + keyword + "'.");
+            return;
+        }
+        System.out.println("\n=== Search Results for '" + keyword + "' ===");
+        for (Searchable item : results) {
+            System.out.println("  - " + item);
+        }
+        System.out.println("Total: " + results.size() + " result(s).");
     }
 }
