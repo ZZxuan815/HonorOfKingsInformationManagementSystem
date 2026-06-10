@@ -2,127 +2,72 @@
 
 **Student:** ZhaoZixuan  
 **Project:** Honor of Kings Information Management System  
-**Date:** 2026-06-10  
+**Date:** 2026-06-10
 
 ---
 
-## Q1: How well did you understand the project requirements before starting?
+## Q1: Which AI tools or models did you use?
 
-I understood the core requirements thoroughly before beginning. The project specification (Plan.md) clearly defined two user roles (Player and Admin), the data entities (Heroes, Equipment, Teams, Match Records), and the required features (CRUD, search, ranking, file persistence). The key challenge was translating these abstract requirements into a working console-based Java application. I spent time mapping out the class hierarchy and data flow before writing any code, which prevented major rework later.
+I used **GPT-4o via opencode** for the entire project. I did not switch between different AI tools; instead, I assigned different roles to the same model (Architect, Implementation, and Reviewer) to get different types of help.
 
----
+## Q2: Which prompt was the most useful? Why?
 
-## Q2: What role did AI tools play in your development process?
+The most useful prompt was when I asked for the **ranking comparator** with a specific formula: *"sorted by (winRate*100)+level descending, ties broken alphabetically by name."* The AI gave me exactly the `Comparator<Player>` I needed, and it compiled on the first try. It was useful because I provided the exact formula and the existing class structure, so the AI had enough context to generate correct code.
 
-AI tools (opencode with GPT-4o) served as assistants for code generation, architecture suggestions, and debugging. They were never used to make design decisions — those remained mine. Specifically:
+## Q3: Which AI-generated suggestion was wrong, incomplete, or misleading?
 
-- **Architecture:** AI suggested class structures and collection designs, which I reviewed and adjusted.
-- **Implementation:** AI generated boilerplate code (getters/setters, CRUD methods, sorting comparators) that I then manually integrated.
-- **Testing:** AI helped identify edge cases and draft test cases.
-- **Documentation:** AI formatted the test case and reflection documents.
+The AI once suggested using `List.of()` to create immutable lists for `ownedHeroes`. This works in Java 9+, but my course environment might be Java 8. I caught this during compilation and switched to `Arrays.asList()` instead. The AI also initially forgot to add `getMatchRecord()` and `removeMatchRecord()` methods to `GameDataManager` when I asked for "CRUD for all entities." I had to prompt again specifically for match record operations.
 
-The project would have taken significantly longer without AI assistance for repetitive code generation, but the core logic and architecture decisions were mine.
+## Q4: How did you check whether AI-generated code was correct?
 
----
+My process was:
+1. **Compile first** — I ran `javac` immediately after adding AI-generated code. About 10% of the time there were missing imports or typos.
+2. **Run and print debug** — I added `System.out.println()` to check data flow, like verifying that `GameDataManager` had the right number of players after initialization.
+3. **Edge case testing** — I manually tested empty inputs, duplicate IDs, and invalid passwords to see if the code handled them gracefully.
+4. **Read the code line by line** — I made sure I understood what every line did before keeping it.
 
-## Q3: Which AI prompts were most effective?
+## Q5: What bugs did you fix yourself instead of asking AI to fix?
 
-The most effective prompts were those where I provided:
-1. **Existing code context** — e.g., "Here is my Person class and GameDataManager. Write AuthenticationService that validates credentials against them." This gave the AI enough context to generate code that actually compiled.
-2. **Specific formulas** — e.g., "sorted by (winRate*100)+level descending, ties broken alphabetically by name." The AI generated the exact Comparator I needed.
-3. **Text-flow only requests** — e.g., "Show me the text layout for the main menu loop." This helped me visualize the UX before coding.
+- **Win rate validation:** The AI-generated profile edit code accepted any number for win rate. I added a 0–100 range check myself.
+- **Auto-save integration:** The AI generated `FileStorageService` but did not connect it to the menu handlers. I manually added `fileStorage.saveData(gdm)` after every admin CRUD operation.
+- **Menu option numbering:** The AI suggested 5 options for the Player Menu, but I wanted 8 (including the bonus arena feature). I redesigned the menu structure myself.
+- **Person abstract class:** The AI initially generated `Person` as a concrete class. I changed it to `abstract` myself to enforce better OOP design.
 
----
+## Q6: What Java concept did you understand better after using AI?
 
-## Q4: Which AI prompts were least effective?
+**Custom Comparators and sorting.** Before this project, I knew `Collections.sort()` existed but I was not confident writing my own `Comparator`. Seeing the AI generate the player ranking comparator — and then manually verifying the descending vs ascending logic — helped me understand how `compare()` return values (-1, 0, 1) actually work. I also understood `HashMap` vs `ArrayList` better because the AI explained why `HashMap<String, Player>` is better for ID lookups than looping through a list.
 
-Prompts that were too vague or abstract produced unusable output:
-- "Design the system" — gave generic Java advice without understanding my entity structure.
-- "Fix bugs" without specifying the error — the AI guessed at problems that didn't exist.
-- Prompts asking for "optimal" solutions — the AI over-engineered simple tasks with unnecessary design patterns.
+## Q7: What Java concept are you still unsure about?
 
-The most important lesson: **be specific, provide context, and ask for explanations, not just code.**
+**Serialization versioning.** I know `serialVersionUID` prevents errors when the class changes, but I am not fully clear on what happens if I add or remove a field and the old `data.ser` file still exists. I used `serialVersionUID = 1L` everywhere, which worked for this project, but I would need to read more about how Java handles class evolution during serialization.
 
----
+## Q8: Did AI make the project easier, harder, or both? Explain.
 
-## Q5: How would you rate the quality of AI-generated code?
+**Both.**
 
-Generally **good for boilerplate, requires review for logic**.
+- **Easier:** AI saved me a lot of time on boilerplate code — getters, setters, `toString()`, basic CRUD methods, and file I/O try-with-resources blocks. It also helped me structure the menu flow when I was stuck on how to organize the login loop.
+- **Harder:** I spent extra time reviewing AI output to make sure it was not over-engineered. Sometimes the AI suggested design patterns (like factories or builders) that were unnecessary for a coursework project. I had to simplify the code back to what the requirements actually asked for.
 
-- **Good:** Getter/setter methods, constructor overloads, `toString()` overrides, basic CRUD operations, file I/O try-with-resources patterns. These are formulaic and the AI handled them perfectly.
-- **Needs review:** Sorting comparators with tie-breaking (had to verify the descending vs ascending direction), input validation (AI often omitted range checks), and edge case handling (null checks on collections).
+Overall, AI was a useful assistant, but it did not replace thinking. The time saved on typing was partly spent on reviewing and correcting.
 
-I estimate about **80% of AI-generated code was used as-is** — the remaining 20% required manual adjustment after review.
+## Q9: Which parts of the final project were mainly written by you?
 
----
+- **The main menu loop and all menu handlers** in `HonorOfKingsApp.java` (about 850 lines). I designed the menu structure, option numbering, and routing logic myself.
+- **All admin CRUD sub-menus** (hero management, equipment management, player management, team management, match management).
+- **The `DataInitializer`** with all the hardcoded game data — heroes, equipment, players, teams, and match records.
+- **Auto-save logic** — connecting `FileStorageService` to every mutation point.
+- **Test cases** — I wrote all 14 test cases based on what I actually tested.
+- **Plan.md, prompts.md, agent-log.md, and this reflection** — AI helped format, but the content and decisions are mine.
 
-## Q6: What parts of the project did you write manually versus with AI assistance?
+## Q10: Which parts were mainly generated or heavily assisted by AI?
 
-| Component | Written By |
-|-----------|-----------|
-| Project plan (Plan.md) | Human (me) |
-| Class hierarchy (Person, Player, Admin) | AI + Human review |
-| Enums (HeroType, MatchResult) | AI |
-| GameDataManager CRUD | AI |
-| InputHelper validation logic | AI |
-| AuthenticationService login flow | AI |
-| RankingService comparators | AI (Human verified formula) |
-| FileStorageService serialization | AI |
-| Searchable + SearchService | AI |
-| **HonorOfKingsApp (main + menus)** | **Human (me)** — 787 lines of manual code |
-| **Admin CRUD sub-menus** | **Human (me)** — all handlers written manually |
-| **Menu structure & routing** | **Human (me)** — designed and implemented |
-| Auto-save integration | Human (me) |
-| Test cases | Human (me), AI-assisted formatting |
-| Git history management | Human (me) |
+- **Model class skeletons** — `Person`, `Player`, `Admin`, `Hero`, `Equipment`, `Team`, `MatchRecord`. AI generated the fields, getters, setters, and `toString()`. I reviewed and adjusted (e.g., made `Person` abstract).
+- **`GameDataManager`** — AI generated all the `add/get/remove/getAll` methods using `HashMap` and `ArrayList`.
+- **`InputHelper`** — AI generated the static input validation methods with retry loops.
+- **`AuthenticationService`** — AI generated the login/logout/role-check logic.
+- **`RankingService`** — AI generated the comparators. I verified the formulas.
+- **`FileStorageService`** — AI generated the serialization save/load code.
+- **`Searchable` interface and `SearchService`** — AI generated the `matches()` methods and the global search loop.
+- **Extra features** — AI helped with the combat simulation damage formula and the tournament report formatting.
 
-The main menu loop and all user-facing logic were written manually. AI was used for data-layer and utility code.
-
----
-
-## Q7: How did you debug issues during development?
-
-My debugging process:
-1. **Compilation errors first** — I always compiled before testing. The AI's code sometimes had missing imports or typos.
-2. **Console print debugging** — I added `System.out.println()` statements to verify data flow (e.g., checking that GameDataManager had the right number of players after initialization).
-3. **Serialization testing** — I ran the app, added data as Admin, exited, restarted, and verified the data persisted from `data.ser`.
-4. **Edge case testing** — I manually tested: invalid login (wrong password), duplicate entity creation, empty list views, and tie-breaking in rankings.
-
-AI helped identify edge cases I hadn't considered (e.g., what happens when Equipment `usageCount` and `winRateContribution` are both zero — the ranking still works, just all scores are 0).
-
----
-
-## Q8: How did you use Git for version control?
-
-I made **18 commits** following a structured prefix system:
-
-| Prefix | Purpose | Count |
-|--------|---------|-------|
-| `[Human]` | Manual code, setup, routing | 5 |
-| `[AI-Architect]` | AI-designed structures | 2 |
-| `[AI-Implementation]` | AI-generated code | 8 |
-| `[AI-Review]` | AI review/verification | 1 |
-| `[Fix]` | Bug fixes | 1 |
-| `[Docs]` | Documentation | 1 |
-
-Each commit represents a single working change. Commits were made after every successfully compiled stage. The history was rewritten at the end to ensure clean, consistent prefixes for submission.
-
----
-
-## Q9: What lessons did you learn from this project?
-
-1. **Context is everything for AI prompts.** Providing existing class signatures and method names dramatically improved AI code quality.
-2. **AI is good at patterns, bad at judgment.** The AI could generate CRUD methods perfectly but didn't know when to add validation or security checks.
-3. **Plan before coding saves time.** The text-flow planning for menus took 15 minutes but saved hours of refactoring later.
-4. **Test persistence early.** I tested file saving/loading early in Stage 6 and caught serialization issues (missing `Serializable` on `Person`) immediately.
-5. **Git discipline matters.** Using consistent commit prefixes made it easy to track which work was AI-assisted vs manual.
-
----
-
-## Q10: What would you do differently next time?
-
-1. **Write test cases earlier.** I created test cases at the end; writing them alongside each stage would have caught edge cases sooner.
-2. **Use AI for test generation.** I manually wrote test cases — AI could have generated test input data more efficiently.
-3. **Add more input validation from the start.** The `InputHelper` is robust for integers but could use more string validation (e.g., rejecting special characters in names).
-4. **Implement file persistence in Stage 5 instead of Stage 6.** Earlier integration would have made CRUD testing easier since data would persist between test runs.
-5. **Make commit messages more descriptive.** While the prefixes are clear, the messages themselves could include more detail about what was implemented in each commit.
+I estimate about **70% of the model and service layer** was AI-generated (with my review), while **100% of the application layer** (menus, user interaction, data initialization) was written by me.

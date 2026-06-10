@@ -23,7 +23,7 @@ This system manages players, heroes, equipment, teams, and match records for Hon
 
 ## 3. Java Concepts Used
 * **Inheritance:** `Person` abstract class, `Player` and `Admin` extend `Person`.
-* **Interfaces:** `Serializable` for file I/O; custom `Searchable` interface with `search(String query)`.
+* **Interfaces:** `Serializable` for file I/O; custom `Searchable` interface with `matches(String keyword)`.
 * **Polymorphism:** Method overloading in search services; `ArrayList<Person>` for login list.
 * **Collections:** `HashMap<String, Player>` for fast lookup by ID; `HashMap<String, Hero>` by name; `ArrayList` for ordered lists.
 * **Exception handling:** `try-catch` for file I/O, number format, invalid input.

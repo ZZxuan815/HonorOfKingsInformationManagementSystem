@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Equipment;
@@ -79,13 +80,14 @@ public class HonorOfKingsApp {
             System.out.println("2. View all equipment");
             System.out.println("3. View hero details");
             System.out.println("4. View player info");
-            System.out.println("5. View player leaderboard");
-            System.out.println("6. View equipment statistics");
-            System.out.println("7. Edit my profile");
-            System.out.println("8. [Bonus] HOK Arena & Recommendation");
-            System.out.println("9. Logout");
+            System.out.println("5. View match history");
+            System.out.println("6. View player leaderboard");
+            System.out.println("7. View equipment statistics");
+            System.out.println("8. Edit my profile");
+            System.out.println("9. [Bonus] HOK Arena & Recommendation");
+            System.out.println("10. Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 9);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 10);
 
             switch (choice) {
                 case 1:
@@ -101,18 +103,21 @@ public class HonorOfKingsApp {
                     viewPlayerInfo(gdm);
                     break;
                 case 5:
-                    viewPlayerLeaderboard(rankingService);
+                    viewMatchHistory(gdm);
                     break;
                 case 6:
-                    viewEquipmentStatistics(rankingService);
+                    viewPlayerLeaderboard(rankingService);
                     break;
                 case 7:
-                    editMyProfile(gdm, authService, fileStorage);
+                    viewEquipmentStatistics(rankingService);
                     break;
                 case 8:
-                    runHokArena(gdm, extraService);
+                    editMyProfile(gdm, authService, fileStorage);
                     break;
                 case 9:
+                    runHokArena(gdm, extraService);
+                    break;
+                case 10:
                     return;
                 default:
                     System.out.println("Invalid option.");
@@ -157,7 +162,20 @@ public class HonorOfKingsApp {
         System.out.println("Current Owned Heroes: " + player.getOwnedHeroes());
         String heroesStr = InputHelper.readString("Enter owned heroes (comma-separated, or press Enter to skip): ");
         if (!heroesStr.isEmpty()) {
-            player.setOwnedHeroes(List.of(heroesStr.split(",")));
+            player.setOwnedHeroes(java.util.Arrays.asList(heroesStr.split(",")));
+        }
+
+        String equipHero = InputHelper.readString("Enter hero name to equip (or press Enter to skip): ");
+        if (!equipHero.isEmpty()) {
+            if (!player.getOwnedHeroes().contains(equipHero)) {
+                System.out.println("You don't own this hero.");
+            } else {
+                String equipStr = InputHelper.readString("Enter equipment names (comma-separated): ");
+                if (!equipStr.isEmpty()) {
+                    player.getEquippedItems().put(equipHero, java.util.Arrays.asList(equipStr.split(",")));
+                    System.out.println("Equipment updated for " + equipHero + ".");
+                }
+            }
         }
 
         fileStorage.saveData(gdm);
@@ -201,6 +219,15 @@ public class HonorOfKingsApp {
             System.out.println("Win Rate: " + (player.getWinRate() * 100) + "%");
             System.out.println("Team ID: " + player.getTeamId());
             System.out.println("Owned Heroes: " + player.getOwnedHeroes());
+            System.out.println("Equipped Items:");
+            for (String hero : player.getOwnedHeroes()) {
+                java.util.List<String> items = player.getEquippedItems().get(hero);
+                if (items != null && !items.isEmpty()) {
+                    System.out.println("  " + hero + " -> " + items);
+                } else {
+                    System.out.println("  " + hero + " -> (none)");
+                }
+            }
         } else {
             System.out.println("Player not found.");
         }
@@ -221,13 +248,14 @@ public class HonorOfKingsApp {
             System.out.println("6. View all heroes");
             System.out.println("7. View all equipment");
             System.out.println("8. View match records");
-            System.out.println("9. View player leaderboard");
-            System.out.println("10. View equipment statistics");
-            System.out.println("11. Global search");
-            System.out.println("12. [Bonus] HOK Arena & Recommendation");
-            System.out.println("13. Save & Logout");
+            System.out.println("9. View match history");
+            System.out.println("10. View player leaderboard");
+            System.out.println("11. View equipment statistics");
+            System.out.println("12. Global search");
+            System.out.println("13. [Bonus] HOK Arena & Recommendation");
+            System.out.println("14. Save & Logout");
 
-            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 13);
+            int choice = InputHelper.readIntRange("Enter your choice: ", 1, 14);
 
             switch (choice) {
                 case 1:
@@ -255,18 +283,21 @@ public class HonorOfKingsApp {
                     viewAllMatchRecords(gdm);
                     break;
                 case 9:
-                    viewPlayerLeaderboard(rankingService);
+                    viewMatchHistory(gdm);
                     break;
                 case 10:
-                    viewEquipmentStatistics(rankingService);
+                    viewPlayerLeaderboard(rankingService);
                     break;
                 case 11:
-                    globalSearch(searchService);
+                    viewEquipmentStatistics(rankingService);
                     break;
                 case 12:
-                    runHokArena(gdm, extraService);
+                    globalSearch(searchService);
                     break;
                 case 13:
+                    runHokArena(gdm, extraService);
+                    break;
+                case 14:
                     fileStorage.saveData(gdm);
                     return;
                 default:
@@ -642,6 +673,42 @@ public class HonorOfKingsApp {
             System.out.println("Members: " + team.getMemberIds());
             System.out.println("Total Matches: " + team.getTotalMatches());
             System.out.println("Wins: " + team.getWins());
+
+            int totalLevel = 0;
+            int validMembers = 0;
+            Player topPlayer = null;
+            double topScore = -1;
+
+            for (String memberId : team.getMemberIds()) {
+                Player p = gdm.getPlayer(memberId);
+                if (p != null) {
+                    totalLevel += p.getLevel();
+                    validMembers++;
+                    double score = (p.getWinRate() * 100) + p.getLevel();
+                    if (score > topScore || (score == topScore && topPlayer != null && p.getName().compareTo(topPlayer.getName()) < 0)) {
+                        topScore = score;
+                        topPlayer = p;
+                    }
+                }
+            }
+
+            if (validMembers > 0) {
+                System.out.printf("Average Level: %.2f%n", (double) totalLevel / validMembers);
+            } else {
+                System.out.println("Average Level: N/A");
+            }
+
+            if (team.getTotalMatches() > 0) {
+                System.out.printf("Win Rate: %.2f%%%n", (double) team.getWins() / team.getTotalMatches() * 100);
+            } else {
+                System.out.println("Win Rate: N/A");
+            }
+
+            if (topPlayer != null) {
+                System.out.println("Top Player: " + topPlayer.getName() + " (Score: " + (int) topScore + ")");
+            } else {
+                System.out.println("Top Player: N/A");
+            }
         } else {
             System.out.println("Team not found.");
         }
@@ -752,6 +819,61 @@ public class HonorOfKingsApp {
         }
         for (var match : gdm.getAllMatchRecords()) {
             System.out.println(match);
+        }
+    }
+
+    private static void viewMatchHistory(GameDataManager gdm) {
+        System.out.println("\n--- Match History ---");
+        System.out.println("Search by [1] Player ID or [2] Team ID?");
+        int searchType = InputHelper.readIntRange("Enter choice: ", 1, 2);
+        String id = InputHelper.readString("Enter ID: ");
+        int n = InputHelper.readInt("How many recent matches to show? ");
+
+        List<MatchRecord> matches = gdm.getAllMatchRecords();
+        List<MatchRecord> results = new ArrayList<>();
+
+        for (int i = matches.size() - 1; i >= 0; i--) {
+            MatchRecord m = matches.get(i);
+            boolean include = false;
+            if (searchType == 1) {
+                if (m.getHeroPicks().containsKey(id)) {
+                    include = true;
+                }
+            } else {
+                if (m.getTeamA().equals(id) || m.getTeamB().equals(id)) {
+                    include = true;
+                }
+            }
+            if (include) {
+                results.add(m);
+                if (results.size() >= n) break;
+            }
+        }
+
+        if (results.isEmpty()) {
+            System.out.println("No matches found.");
+            return;
+        }
+
+        System.out.println("\n=== Match History ===");
+        for (MatchRecord m : results) {
+            String opponent;
+            String result;
+            if (searchType == 1) {
+                Player p = gdm.getPlayer(id);
+                String playerTeam = (p != null) ? p.getTeamId() : "Unknown";
+                opponent = m.getTeamA().equals(playerTeam) ? m.getTeamB() : m.getTeamA();
+                result = m.getWinner().equals(playerTeam) ? "WIN" : "LOSS";
+            } else {
+                opponent = m.getTeamA().equals(id) ? m.getTeamB() : m.getTeamA();
+                result = m.getWinner().equals(id) ? "WIN" : "LOSS";
+            }
+            System.out.println("Match ID: " + m.getMatchId());
+            System.out.println("Date: " + m.getDate());
+            System.out.println("Opponent: " + opponent);
+            System.out.println("Result: " + result);
+            System.out.println("Hero Picks: " + m.getHeroPicks());
+            System.out.println();
         }
     }
 

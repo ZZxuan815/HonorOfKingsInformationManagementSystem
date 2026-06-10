@@ -10,6 +10,7 @@ import model.Equipment;
 import model.Hero;
 import model.HeroType;
 import model.MatchRecord;
+import model.MatchResult;
 import model.Player;
 import model.Team;
 import service.GameDataManager;
@@ -180,62 +181,107 @@ public class DataInitializer {
     private static void initPlayers(GameDataManager gdm) {
         Player p1 = new Player("P001", "Li Bai", "pass123", 35, 0.68, "T01");
         p1.setOwnedHeroes(Arrays.asList("Li Bai", "Han Xin", "Zhao Yun"));
+        p1.getEquippedItems().put("Li Bai", Arrays.asList("Shadow Blade", "Boots of Resistance"));
+        p1.getEquippedItems().put("Han Xin", Arrays.asList("Endless Blade", "Guardian Angel"));
+        p1.getEquippedItems().put("Zhao Yun", Arrays.asList("Shadow Blade", "Armor of Thorns"));
         gdm.addPlayer(p1);
 
         Player p2 = new Player("P002", "Diao Chan", "pass456", 28, 0.55, "T01");
         p2.setOwnedHeroes(Arrays.asList("Diao Chan", "An Qi La", "Zhu Ge Liang"));
+        p2.getEquippedItems().put("Diao Chan", Arrays.asList("Book of Sages", "Boots of Resistance"));
+        p2.getEquippedItems().put("An Qi La", Arrays.asList("Echo Wand", "Frozen Staff"));
+        p2.getEquippedItems().put("Zhu Ge Liang", Arrays.asList("Book of Sages", "Void Staff"));
         gdm.addPlayer(p2);
 
         Player p3 = new Player("P003", "Cao Cao", "pass789", 42, 0.72, "T01");
         p3.setOwnedHeroes(Arrays.asList("Cao Cao", "Lu Bu", "Guan Yu"));
+        p3.getEquippedItems().put("Cao Cao", Arrays.asList("Endless Blade", "Armor of Thorns"));
+        p3.getEquippedItems().put("Lu Bu", Arrays.asList("Shadow Blade", "Guardian Angel"));
+        p3.getEquippedItems().put("Guan Yu", Arrays.asList("Shadow Blade", "Boots of Resistance"));
         gdm.addPlayer(p3);
 
         Player p4 = new Player("P004", "Hou Yi", "pass111", 20, 0.45, "T02");
         p4.setOwnedHeroes(Arrays.asList("Hou Yi", "Sun Shang Xiang", "Bai Li Shou Yue"));
+        p4.getEquippedItems().put("Hou Yi", Arrays.asList("Shadow Blade", "Boots of Speed"));
+        p4.getEquippedItems().put("Sun Shang Xiang", Arrays.asList("Endless Blade", "Storm Sword"));
+        p4.getEquippedItems().put("Bai Li Shou Yue", Arrays.asList("Sky Breaker", "Guardian Angel"));
         gdm.addPlayer(p4);
 
         Player p5 = new Player("P005", "Lu Bu", "pass222", 48, 0.78, "T02");
         p5.setOwnedHeroes(Arrays.asList("Lu Bu", "Zhao Yun", "Cao Cao"));
+        p5.getEquippedItems().put("Lu Bu", Arrays.asList("Shadow Blade", "Armor of Thorns", "Guardian Angel"));
+        p5.getEquippedItems().put("Zhao Yun", Arrays.asList("Endless Blade", "Boots of Resistance"));
+        p5.getEquippedItems().put("Cao Cao", Arrays.asList("Bloodthirsty Blade", "Armor of Thorns"));
         gdm.addPlayer(p5);
 
         Player p6 = new Player("P006", "Zhao Yun", "pass333", 30, 0.60, "T02");
         p6.setOwnedHeroes(Arrays.asList("Zhao Yun", "Mo Ye", "Han Xin"));
+        p6.getEquippedItems().put("Zhao Yun", Arrays.asList("Shadow Blade", "Guardian Angel"));
+        p6.getEquippedItems().put("Mo Ye", Arrays.asList("Endless Blade", "Bloodthirsty Blade"));
+        p6.getEquippedItems().put("Han Xin", Arrays.asList("Sacrifice Dagger", "Boots of Speed"));
         gdm.addPlayer(p6);
 
         Player p7 = new Player("P007", "Guan Yu", "pass444", 38, 0.65, "T03");
         p7.setOwnedHeroes(Arrays.asList("Guan Yu", "Lu Bu", "Lian Po"));
+        p7.getEquippedItems().put("Guan Yu", Arrays.asList("Shadow Blade", "Boots of Resistance"));
+        p7.getEquippedItems().put("Lu Bu", Arrays.asList("Endless Blade", "Armor of Thorns"));
+        p7.getEquippedItems().put("Lian Po", Arrays.asList("Doom Shield", "Guardian Angel"));
         gdm.addPlayer(p7);
 
         Player p8 = new Player("P008", "Han Xin", "pass555", 45, 0.82, "T03");
         p8.setOwnedHeroes(Arrays.asList("Han Xin", "Mo Ye", "Li Bai"));
+        p8.getEquippedItems().put("Han Xin", Arrays.asList("Endless Blade", "Boots of Speed"));
+        p8.getEquippedItems().put("Mo Ye", Arrays.asList("Shadow Blade", "Guardian Angel"));
+        p8.getEquippedItems().put("Li Bai", Arrays.asList("Bloodthirsty Blade", "Armor of Thorns"));
         gdm.addPlayer(p8);
 
         Player p9 = new Player("P009", "Ya Se", "pass666", 25, 0.50, "T03");
         p9.setOwnedHeroes(Arrays.asList("Ya Se", "Lian Po", "Cai Wen Ji"));
+        p9.getEquippedItems().put("Ya Se", Arrays.asList("Doom Shield", "Boots of Resistance"));
+        p9.getEquippedItems().put("Lian Po", Arrays.asList("Armor of Thorns", "Moonlight Shield"));
+        p9.getEquippedItems().put("Cai Wen Ji", Arrays.asList("Book of Sages", "Boots of Mana"));
         gdm.addPlayer(p9);
 
         Player p10 = new Player("P010", "Mo Ye", "pass777", 33, 0.70, "T01");
         p10.setOwnedHeroes(Arrays.asList("Mo Ye", "Han Xin", "Li Bai"));
+        p10.getEquippedItems().put("Mo Ye", Arrays.asList("Shadow Blade", "Endless Blade"));
+        p10.getEquippedItems().put("Han Xin", Arrays.asList("Sacrifice Dagger", "Boots of Speed"));
+        p10.getEquippedItems().put("Li Bai", Arrays.asList("Bloodthirsty Blade", "Guardian Angel"));
         gdm.addPlayer(p10);
 
         Player p11 = new Player("P011", "Sun Shang Xiang", "pass888", 40, 0.75, "T01");
         p11.setOwnedHeroes(Arrays.asList("Sun Shang Xiang", "Hou Yi", "Zhao Yun"));
+        p11.getEquippedItems().put("Sun Shang Xiang", Arrays.asList("Endless Blade", "Storm Sword"));
+        p11.getEquippedItems().put("Hou Yi", Arrays.asList("Shadow Blade", "Boots of Speed"));
+        p11.getEquippedItems().put("Zhao Yun", Arrays.asList("Bloodthirsty Blade", "Armor of Thorns"));
         gdm.addPlayer(p11);
 
         Player p12 = new Player("P012", "Zhu Ge Liang", "pass999", 36, 0.62, "T02");
         p12.setOwnedHeroes(Arrays.asList("Zhu Ge Liang", "Diao Chan", "An Qi La"));
+        p12.getEquippedItems().put("Zhu Ge Liang", Arrays.asList("Book of Sages", "Void Staff", "Phoenix Crown"));
+        p12.getEquippedItems().put("Diao Chan", Arrays.asList("Echo Wand", "Boots of Resistance"));
+        p12.getEquippedItems().put("An Qi La", Arrays.asList("Frozen Staff", "Mantle of the Sages"));
         gdm.addPlayer(p12);
 
         Player p13 = new Player("P013", "Lian Po", "pass000", 44, 0.58, "T02");
         p13.setOwnedHeroes(Arrays.asList("Lian Po", "Ya Se", "Cai Wen Ji"));
+        p13.getEquippedItems().put("Lian Po", Arrays.asList("Doom Shield", "Armor of Thorns"));
+        p13.getEquippedItems().put("Ya Se", Arrays.asList("Moonlight Shield", "Guardian Angel"));
+        p13.getEquippedItems().put("Cai Wen Ji", Arrays.asList("Book of Sages", "Boots of Mana"));
         gdm.addPlayer(p13);
 
         Player p14 = new Player("P014", "Cai Wen Ji", "passaaa", 32, 0.48, "T03");
         p14.setOwnedHeroes(Arrays.asList("Cai Wen Ji", "Sun Bin", "Diao Chan"));
+        p14.getEquippedItems().put("Cai Wen Ji", Arrays.asList("Book of Sages", "Boots of Mana"));
+        p14.getEquippedItems().put("Sun Bin", Arrays.asList("Echo Wand", "Boots of Resistance"));
+        p14.getEquippedItems().put("Diao Chan", Arrays.asList("Frozen Staff", "Phoenix Crown"));
         gdm.addPlayer(p14);
 
         Player p15 = new Player("P015", "Li Yuan Fang", "passbbb", 38, 0.66, "T03");
         p15.setOwnedHeroes(Arrays.asList("Li Yuan Fang", "Bai Li Shou Yue", "Sun Shang Xiang"));
+        p15.getEquippedItems().put("Li Yuan Fang", Arrays.asList("Shadow Blade", "Guardian Angel"));
+        p15.getEquippedItems().put("Bai Li Shou Yue", Arrays.asList("Sky Breaker", "Boots of Speed"));
+        p15.getEquippedItems().put("Sun Shang Xiang", Arrays.asList("Endless Blade", "Storm Sword"));
         gdm.addPlayer(p15);
 
         Admin admin1 = new Admin("A001", "AdminZhang", "admin123", "super_admin");
@@ -265,6 +311,12 @@ public class DataInitializer {
         gdm.addTeam(t3);
     }
 
+    private static MatchResult determineResult(String teamA, String teamB, String winner) {
+        if (winner.equals(teamA)) return MatchResult.WIN;
+        if (winner.equals(teamB)) return MatchResult.LOSS;
+        return MatchResult.DRAW;
+    }
+
     private static void initMatchRecords(GameDataManager gdm) {
         Map<String, String> picks1 = new HashMap<>();
         picks1.put("P001", "Li Bai");
@@ -273,6 +325,7 @@ public class DataInitializer {
         picks1.put("P010", "Mo Ye");
         MatchRecord m1 = new MatchRecord("M001", "2026-01-15", "T01", "T02", "T01");
         m1.setHeroPicks(picks1);
+        m1.setResult(determineResult("T01", "T02", "T01"));
         gdm.addMatchRecord(m1);
 
         Map<String, String> picks2 = new HashMap<>();
@@ -281,6 +334,7 @@ public class DataInitializer {
         picks2.put("P006", "Zhao Yun");
         MatchRecord m2 = new MatchRecord("M002", "2026-01-18", "T02", "T03", "T02");
         m2.setHeroPicks(picks2);
+        m2.setResult(determineResult("T02", "T03", "T02"));
         gdm.addMatchRecord(m2);
 
         Map<String, String> picks3 = new HashMap<>();
@@ -289,6 +343,7 @@ public class DataInitializer {
         picks3.put("P009", "Ya Se");
         MatchRecord m3 = new MatchRecord("M003", "2026-01-20", "T03", "T01", "T01");
         m3.setHeroPicks(picks3);
+        m3.setResult(determineResult("T03", "T01", "T01"));
         gdm.addMatchRecord(m3);
 
         Map<String, String> picks4 = new HashMap<>();
@@ -298,6 +353,7 @@ public class DataInitializer {
         picks4.put("P002", "An Qi La");
         MatchRecord m4 = new MatchRecord("M004", "2026-02-01", "T01", "T03", "T01");
         m4.setHeroPicks(picks4);
+        m4.setResult(determineResult("T01", "T03", "T01"));
         gdm.addMatchRecord(m4);
 
         Map<String, String> picks5 = new HashMap<>();
@@ -306,6 +362,7 @@ public class DataInitializer {
         picks5.put("P006", "Mo Ye");
         MatchRecord m5 = new MatchRecord("M005", "2026-02-05", "T02", "T01", "T02");
         m5.setHeroPicks(picks5);
+        m5.setResult(determineResult("T02", "T01", "T02"));
         gdm.addMatchRecord(m5);
 
         Map<String, String> picks6 = new HashMap<>();
@@ -314,6 +371,7 @@ public class DataInitializer {
         picks6.put("P009", "Cai Wen Ji");
         MatchRecord m6 = new MatchRecord("M006", "2026-02-10", "T03", "T02", "T03");
         m6.setHeroPicks(picks6);
+        m6.setResult(determineResult("T03", "T02", "T03"));
         gdm.addMatchRecord(m6);
 
         Map<String, String> picks7 = new HashMap<>();
@@ -323,6 +381,7 @@ public class DataInitializer {
         picks7.put("P010", "Han Xin");
         MatchRecord m7 = new MatchRecord("M007", "2026-02-20", "T01", "T02", "T01");
         m7.setHeroPicks(picks7);
+        m7.setResult(determineResult("T01", "T02", "T01"));
         gdm.addMatchRecord(m7);
 
         Map<String, String> picks8 = new HashMap<>();
@@ -331,6 +390,7 @@ public class DataInitializer {
         picks8.put("P006", "Han Xin");
         MatchRecord m8 = new MatchRecord("M008", "2026-03-01", "T02", "T03", "T03");
         m8.setHeroPicks(picks8);
+        m8.setResult(determineResult("T02", "T03", "T03"));
         gdm.addMatchRecord(m8);
 
         Map<String, String> picks9 = new HashMap<>();
@@ -339,6 +399,7 @@ public class DataInitializer {
         picks9.put("P009", "Sun Bin");
         MatchRecord m9 = new MatchRecord("M009", "2026-03-05", "T03", "T01", "T01");
         m9.setHeroPicks(picks9);
+        m9.setResult(determineResult("T03", "T01", "T01"));
         gdm.addMatchRecord(m9);
 
         Map<String, String> picks10 = new HashMap<>();
@@ -348,6 +409,7 @@ public class DataInitializer {
         picks10.put("P008", "Han Xin");
         MatchRecord m10 = new MatchRecord("M010", "2026-03-10", "T01", "T03", "T01");
         m10.setHeroPicks(picks10);
+        m10.setResult(determineResult("T01", "T03", "T01"));
         gdm.addMatchRecord(m10);
 
         Map<String, String> picks11 = new HashMap<>();
@@ -357,6 +419,7 @@ public class DataInitializer {
         picks11.put("P009", "Ya Se");
         MatchRecord m11 = new MatchRecord("M011", "2026-03-15", "T02", "T03", "T02");
         m11.setHeroPicks(picks11);
+        m11.setResult(determineResult("T02", "T03", "T02"));
         gdm.addMatchRecord(m11);
     }
 }

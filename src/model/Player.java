@@ -10,10 +10,12 @@ public class Player extends Person implements Searchable {
     private double winRate;
     private String teamId;
     private List<String> ownedHeroes;
+    private java.util.Map<String, java.util.List<String>> equippedItems;
 
     public Player() {
         super();
         this.ownedHeroes = new ArrayList<>();
+        this.equippedItems = new java.util.HashMap<>();
     }
 
     public Player(String id, String name, String password, int level, double winRate, String teamId) {
@@ -22,6 +24,7 @@ public class Player extends Person implements Searchable {
         this.winRate = winRate;
         this.teamId = teamId;
         this.ownedHeroes = new ArrayList<>();
+        this.equippedItems = new java.util.HashMap<>();
     }
 
     public int getLevel() {
@@ -54,6 +57,14 @@ public class Player extends Person implements Searchable {
 
     public void setOwnedHeroes(List<String> ownedHeroes) {
         this.ownedHeroes = ownedHeroes;
+    }
+
+    public java.util.Map<String, java.util.List<String>> getEquippedItems() {
+        return equippedItems;
+    }
+
+    public void setEquippedItems(java.util.Map<String, java.util.List<String>> equippedItems) {
+        this.equippedItems = equippedItems;
     }
 
     @Override

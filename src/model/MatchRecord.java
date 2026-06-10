@@ -12,6 +12,7 @@ public class MatchRecord implements Serializable, Searchable {
     private String teamA;
     private String teamB;
     private String winner;
+    private MatchResult result;
     private Map<String, String> heroPicks;
 
     public MatchRecord() {
@@ -25,6 +26,14 @@ public class MatchRecord implements Serializable, Searchable {
         this.teamB = teamB;
         this.winner = winner;
         this.heroPicks = new HashMap<>();
+    }
+
+    public MatchResult getResult() {
+        return result;
+    }
+
+    public void setResult(MatchResult result) {
+        this.result = result;
     }
 
     public String getMatchId() {

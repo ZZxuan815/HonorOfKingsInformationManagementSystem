@@ -1,60 +1,91 @@
 # AI-Assisted Honor of Kings Information Management System
 
 ## 1. Project Overview
-This project is an advanced, production-grade **Honor of Kings Information Management System (HOK-IMS)** developed for the 2026 Java Coursework submission. It models players, admins, teams, heroes, and equipment using robust Object-Oriented Programming (OOP) architectures. Built with a unified AI-human co-pilot methodology, the system prioritizes safe architecture, deep collections engineering, structural persistence, and visual combat simulation data telemetry.
+This is a console-based Java application that manages game data for Honor of Kings. It stores information about players, heroes, equipment, teams, and match records. The system supports two user roles: **Admin** (full data management) and **Player** (view data and edit own profile). I built this for my Java OOP coursework and used AI tools to help with some coding tasks, which I documented throughout the project.
 
 ## 2. How to Run
-This application requires **Java 8 or higher** to compile and run. It has zero external library dependencies, ensuring 100% headless grading safety.
+You need **Java 8 or higher**. No external libraries are required.
 
-### Step 1: Compilation
-From the project root directory, compile the application using standard `javac`:
+### Compile
 ```bash
 javac -d bin -sourcepath src src/main/HonorOfKingsApp.java
 ```
 
-### Step 2: Execution
-Run the compiled bytecode directly from the root context:
+### Run
 ```bash
 java -cp bin main.HonorOfKingsApp
 ```
 
 ## 3. Default Login Accounts
-The application implements role-based access control via a secure authentication filter. Use the following seeded system accounts to audit specific menu permissions:
 
-| Username | Password | Assigned Role | System Permissions |
-| :--- | :--- | :--- | :--- |
-| `admin` | `admin123` | **Admin** | Full read, write, create, delete, and tournament telemetry privileges. |
-| `player` | `player123` | **Player** | General read-only lookup, personal data mutations, and battle logs. |
+| ID | Password | Role | Name |
+|:---|:---------|:-----|:-----|
+| `A001` | `admin123` | Admin | AdminZhang |
+| `A002` | `admin456` | Admin | AdminLi |
+| `P001` | `pass123` | Player | Li Bai |
+| `P002` | `pass456` | Player | Diao Chan |
+| `P003` | `pass789` | Player | Cao Cao |
+| `P004` | `pass111` | Player | Hou Yi |
+| `P005` | `pass222` | Player | Lu Bu |
+| `P006` | `pass333` | Player | Zhao Yun |
+| `P007` | `pass444` | Player | Guan Yu |
+| `P008` | `pass555` | Player | Han Xin |
+| `P009` | `pass666` | Player | Ya Se |
+| `P010` | `pass777` | Player | Mo Ye |
 
 ## 4. Implemented Features
-The system achieves absolute completeness across all core and advanced credit tiers:
-* **Core Management Matrix:** Player Lookups by ID/Name, Aggregated Team Overviews, High-Level Hero Specification Search, Ranked Equipment Statistics, and Decoupled Leaderboards (sorting by win rate, level, match totals with explicit tie-breaking logic).
-* **Full Administrative CRUD:** Secure Admin operations to create, edit, and safely drop relational data chains across all entity pools.
-* **Section 10.1 Combat Simulation & 10.3 GUI:** A turn-based RPG 1v1 Arena supporting standard console text feedback, or alternative **Dynamic Windows GUI Mode** (`javax.swing.JOptionPane`) rendering pixel-perfect custom ASCII health bars and dodge/critical mechanics.
-* **Section 10.2 Recommendation Engine:** Algorithmic itemization engine determining build paths based on hero archetype statistics and baseline win rates.
-* **Section 10.4 Data Persistence:** State preservation engine via binary object stream serialization automatically updating `data.ser` after each transactional database mutation.
-* **Bonus Bulk Tournament Telemetry:** Automated round-robin match simulation processing massive combinations across the database pool and exporting analytical charts directly to `./tournament_report.txt`.
+
+### Core Features
+- **Player Lookup:** Search by ID or name, view team, level, win rate, and owned heroes.
+- **Team Overview:** Search by ID or name, view members, average level, total matches, win rate, and top player.
+- **Hero Details:** Search by name, view type, base stats, compatible equipment, and players who own the hero.
+- **Equipment Statistics:** Rank equipment by a custom score (usage count × win rate contribution).
+- **Match History:** View match records with opponent, date, winner, and hero picks.
+- **Leaderboard:** Top players sorted by a custom score (win rate × 100 + level), with alphabetical tie-breaking.
+- **Data Management:** Admin can add, edit, and delete players, heroes, equipment, teams, and match records. Players can edit their own level, win rate, and owned heroes.
+- **Authentication:** Login/logout with role-based menus.
+- **Data Persistence:** All data is saved to `data.ser` using Java serialization and reloaded on restart.
+
+### Extra Features (Bonus)
+- **Combat Simulation:** Turn-based 1v1 battle between two heroes with random damage, critical hits (20% chance), and dodges (15% chance).
+- **GUI Combat Mode:** Optional `JOptionPane` dialog version of the combat simulator with ASCII health bars.
+- **Equipment Recommendation:** Suggests equipment for a hero based on its type (e.g., MAGE gets magic items).
+- **Automated Tournament:** Simulates random 1v1 matches across all heroes and exports a ranked report to `tournament_report.txt`.
 
 ## 5. Java Concepts Used
-* **Inheritance & Polymorphism:** `Player` and `Admin` extend the abstract `Person` class, enabling polymorphic runtime storage and evaluation within unified user tracking arrays.
-* **Association, Aggregation & Composition:** A `Team` acts as a logical container aggregating `Player` entities, which maintain deep relational associations with `Hero` catalogs and multiple `Equipment` instances.
-* **Interfaces & Encapsulation:** Decoupled business logic built on clean operational abstractions (e.g. `Searchable`, `Persistable`). Class states are bound tightly by `private` modifiers, utilizing strict standard getter/setter filters.
-* **Java Collections Framework:** Comprehensive usage of `ArrayList`, `HashMap`, and custom `Comparator` implementations to structure data indexes and process complex sorting parameters.
-* **Exception Handling & File I/O:** Robust multi-layered `try-catch` structures capturing invalid parameters, out-of-bound user inputs, and disk serialization faults gracefully.
+- **Inheritance:** `Player` and `Admin` extend the abstract `Person` class.
+- **Interfaces:** `Searchable` interface with `matches(String keyword)` implemented by all model classes.
+- **Polymorphism:** `AuthenticationService` stores the current user as a `Person` and checks role with `instanceof`.
+- **Encapsulation:** All fields are private with getters and setters.
+- **Collections:** `HashMap` for fast ID/name lookups, `ArrayList` for ordered lists, custom `Comparator` for sorting.
+- **Exception Handling:** `try-catch` for file I/O errors, `NumberFormatException` for invalid input, and input range validation.
+- **File I/O:** `ObjectInputStream` and `ObjectOutputStream` for saving and loading `GameDataManager`.
+- **Enums:** `HeroType` (WARRIOR, MAGE, ASSASSIN, TANK, SUPPORT, MARKSMAN, JUNGLER).
 
 ## 6. AI Usage Summary
-* **Responsible AI Framework:** Followed Stanford CS106B and SCALE methodologies. Code was never accepted blindly; every segment was rigorously audited by humans.
-* **Multi-Agent Orchestration:** Utilized three distinct specialized roles to model, enforce, and audit development tiers:
-  * **Architect Agent:** Planned foundational OOP entity class shapes, boundaries, and relational interfaces.
-  * **Implementation Agent:** Authored atomic algorithmic block fragments, file streams, and UI calculations.
-  * **Testing/Reviewer Agent:** Generated strict test boundaries, discovered reference lifecycle leaks, and validated safety.
-* **AIGC Auditing Trail:** All prompts, mutation matrices, decisions, and reflections are explicitly recorded under the `ai/` workspace directory.
+I used **GPT-4o via opencode** as my AI assistant. I followed a multi-agent approach with three roles:
+- **Architect Agent:** Helped design the class hierarchy and menu flow.
+- **Implementation Agent:** Generated specific methods like CRUD operations, comparators, and file I/O code.
+- **Testing/Reviewer Agent:** Helped find edge cases and draft test cases.
+
+I never accepted AI output blindly. Every piece of code was reviewed, compiled, and tested before committing. All prompts, decisions, and reflections are recorded in the `ai/` folder.
 
 ## 7. Testing Summary
-System stability has been validated using an exhaustive structural testing methodology:
-* **Manual Verification Matrix:** A comprehensive 14-tier validation suite covering core CRUD, login filters, data isolation boundaries, and file streams is cataloged in `docs/test-cases.md` (spanning tests **T01 through T14**).
-* **Zero-Error Assurance:** 100% of defined edge cases, null queries, and empty datasets pass with zero compilation errors and graceful runtime handling.
+I tested the system manually with 14 test cases covering:
+- Login authentication (valid and invalid)
+- Player leaderboard sorting and tie-breaking
+- Equipment statistics with empty data
+- Global search (case-insensitive)
+- Player self-profile editing
+- Admin CRUD operations (add hero, delete player, duplicate detection)
+- File persistence (save and reload after restart)
+- Equipment recommendation
+- Combat simulation (console and GUI modes)
+- Automated tournament and report export
+
+All 14 tests passed. Details are in `docs/test-cases.md`.
 
 ## 8. Known Limitations
-* **Terminal GUI Isolation:** While the `JOptionPane` Windows GUI mode functions flawlessly on active interactive OS desktops, running it in absolute headless CI/CD automation environments lacking a physical window server display may fall back to modal dialogue constraints. (Classic Console Mode handles this environment perfectly).
-* **In-Memory Volatility:** Data additions are safely written to `data.ser` on change, but manual physical mutations to the underlying file without utilizing the program's official Administrative dashboard bypass runtime consistency validations.
+- The GUI combat mode uses `JOptionPane`, which requires a desktop environment. It will not work in headless environments, but the console mode works everywhere.
+- Equipment `usageCount` and `winRateContribution` start at zero in the initial dataset because there is no gameplay data feed. The ranking still works but all scores are 0.00 until admin manually updates these values.
+- The match history feature currently shows all match records. Filtering by "last N matches for a specific player or team" is not yet implemented.
