@@ -21,6 +21,7 @@ import util.DataInitializer;
 import util.InputHelper;
 
 public class HonorOfKingsApp {
+    // Main application entry point with login loop and role dispatch
     public static void main(String[] args) {
         FileStorageService fileStorage = new FileStorageService();
         GameDataManager gdm = fileStorage.loadData();
@@ -71,6 +72,7 @@ public class HonorOfKingsApp {
 
     // ===================== PLAYER MENU =====================
 
+    // Player menu: read-only access plus self-profile editing
     private static void runPlayerMenu(GameDataManager gdm, RankingService rankingService,
                                        AuthenticationService authService, FileStorageService fileStorage,
                                        ExtraFeaturesService extraService) {
@@ -89,6 +91,7 @@ public class HonorOfKingsApp {
 
             int choice = InputHelper.readIntRange("Enter your choice: ", 1, 10);
 
+            // Player menu: read-only access plus self-profile editing
             switch (choice) {
                 case 1:
                     viewAllHeroes(gdm);
@@ -196,6 +199,7 @@ public class HonorOfKingsApp {
         }
     }
 
+    // Displays hero details and lists players who own this hero
     private static void viewHeroDetails(GameDataManager gdm) {
         String name = InputHelper.readString("Enter hero name: ");
         Hero hero = gdm.getHero(name);
@@ -246,6 +250,7 @@ public class HonorOfKingsApp {
 
     // ===================== ADMIN MENU =====================
 
+    // Admin menu: full CRUD operations for all entities
     private static void runAdminMenu(GameDataManager gdm, RankingService rankingService,
                                       SearchService searchService, AuthenticationService authService,
                                       FileStorageService fileStorage, ExtraFeaturesService extraService) {
@@ -268,6 +273,7 @@ public class HonorOfKingsApp {
 
             int choice = InputHelper.readIntRange("Enter your choice: ", 1, 14);
 
+            // Admin menu: full CRUD operations for all entities
             switch (choice) {
                 case 1:
                     runHeroManagement(gdm, fileStorage);
@@ -835,6 +841,7 @@ public class HonorOfKingsApp {
         }
     }
 
+    // Shows last N matches with aggregate win/loss and hero pick rate stats
     private static void viewMatchHistory(GameDataManager gdm) {
         System.out.println("\n--- Match History ---");
         System.out.println("Search by [1] Player ID or [2] Team ID?");
@@ -916,6 +923,7 @@ public class HonorOfKingsApp {
         }
     }
 
+    // Leaderboard with 4 sorting options: custom score, win rate, level, match count
     private static void viewPlayerLeaderboard(RankingService rankingService) {
         System.out.println("\n=== Player Leaderboard ===");
         System.out.println("Sort by: [1] Custom Score [2] Win Rate [3] Level [4] Number of Matches");

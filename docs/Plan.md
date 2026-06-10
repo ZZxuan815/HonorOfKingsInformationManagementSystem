@@ -38,7 +38,7 @@ This system manages players, heroes, equipment, teams, and match records for Hon
 * **`MatchResult`**: WIN, LOSS, DRAW.
 
 ### Interfaces
-* **`Searchable`**: defines `List<?> search(String query)`.
+* **`Searchable`**: defines `boolean matches(String keyword)`.
 
 ### Model Classes
 * **`Person` (abstract, implements Serializable):** id, name, password.
@@ -156,11 +156,11 @@ Initial dataset (hardcoded in `DataInitializer`):
 
 | Entity            | Count |
 | :---------------- | :---: |
-| **Players**       |  10   |
-| **Heroes**        |  15   |
-| **Equipment**     |  20   |
+| **Players**       |  15   |
+| **Heroes**        |  18   |
+| **Equipment**     |  22   |
 | **Teams**         |   3   |
-| **Match records** |  10   |
+| **Match records** |  11   |
 
 * **Storage:** `FileStorageService` uses `ObjectOutputStream`/`ObjectInputStream` to serialize `GameDataManager` to/from `data.ser`. For extra credit, JSON may be used.
 
@@ -222,6 +222,10 @@ Three AI agent roles (can be same tool, different roles):
 | **T10** | Admin edit hero                         |
 | **T11** | Authentication & Role-based Menu Access |
 | **T12** | Data persistence (Save/Load .ser File)  |
+| **T13** | Graphical GUI Dialog Combat            |
+| **T14** | Automated Tournament and TXT Export     |
+| **T15** | Match History Aggregate Stats           |
+| **T16** | Player Equipped Items Display           |
 
 * *Record actual vs expected in `docs/test-cases.md`.*
 
