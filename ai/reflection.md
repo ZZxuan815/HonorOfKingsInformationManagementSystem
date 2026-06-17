@@ -20,22 +20,21 @@ The AI once suggested using `List.of()` to create immutable lists for `ownedHero
 
 ## Q4: How did you check whether AI-generated code was correct?
 
-My process was:
-1. **Compile first** — I ran `javac` immediately after adding AI-generated code. About 10% of the time there were missing imports or typos.
-2. **Run and print debug** — I added `System.out.println()` to check data flow, like verifying that `GameDataManager` had the right number of players after initialization.
-3. **Edge case testing** — I manually tested empty inputs, duplicate IDs, and invalid passwords to see if the code handled them gracefully.
-4. **Read the code line by line** — I made sure I understood what every line did before keeping it.
+I just compiled everything right away after pasting AI output. Sometimes there were missing imports or small typos, so javac caught those. Then I ran the program with some print statements to see if data actually flowed through correctly. After that I tested edge cases like empty inputs, duplicate IDs, and wrong passwords. And I always read through the code before keeping it, just to make sure I understood what it was doing.
 
 ## Q5: What bugs did you fix yourself instead of asking AI to fix?
 
-- **Win rate validation:** The AI-generated profile edit code accepted any number for win rate. I added a 0–100 range check myself.
-- **Auto-save integration:** The AI generated `FileStorageService` but did not connect it to the menu handlers. I manually added `fileStorage.saveData(gdm)` after every admin CRUD operation.
-- **Menu option numbering:** The AI suggested 5 options for the Player Menu, but I wanted 8 (including the bonus arena feature). I redesigned the menu structure myself.
-- **Person abstract class:** The AI initially generated `Person` as a concrete class. I changed it to `abstract` myself to enforce better OOP design.
+The AI's profile edit code didn't have any range check for win rate. I added a 0-100 validation myself.
+
+The AI wrote `FileStorageService` but never actually connected it to the menus. I had to add `fileStorage.saveData(gdm)` after every admin operation by hand.
+
+Another thing was the menu layout. The AI suggested 5 options for the Player Menu, but I wanted 8 including the bonus arena, so I redesigned the whole menu structure.
+
+I also made `Person` abstract. The AI generated it as a concrete class, which didn't make sense since you should never instantiate a generic person directly.
 
 ## Q6: What Java concept did you understand better after using AI?
 
-**Custom Comparators and sorting.** Before this project, I knew `Collections.sort()` existed but I was not confident writing my own `Comparator`. Seeing the AI generate the player ranking comparator — and then manually verifying the descending vs ascending logic — helped me understand how `compare()` return values (-1, 0, 1) actually work. I also understood `HashMap` vs `ArrayList` better because the AI explained why `HashMap<String, Player>` is better for ID lookups than looping through a list.
+I finally got how Comparator works. Seeing the AI generate the ranking code, then manually checking if descending was actually descending and tie-breaking actually worked, it all clicked. The `compare()` return values (-1, 0, 1) made sense after I traced through a few examples. I also understood HashMap vs ArrayList better after the AI explained why HashMap is faster for ID lookups.
 
 ## Q7: What Java concept are you still unsure about?
 
@@ -43,32 +42,42 @@ My process was:
 
 ## Q8: Did AI make the project easier, harder, or both? Explain.
 
-**Both.**
+Both. The AI saved a ton of time on boring stuff like getters, setters, toString(), and try-with-resources boilerplate. It also helped me figure out the menu loop structure when I was stuck.
 
-- **Easier:** AI saved me a lot of time on boilerplate code — getters, setters, `toString()`, basic CRUD methods, and file I/O try-with-resources blocks. It also helped me structure the menu flow when I was stuck on how to organize the login loop.
-- **Harder:** I spent extra time reviewing AI output to make sure it was not over-engineered. Sometimes the AI suggested design patterns (like factories or builders) that were unnecessary for a coursework project. I had to simplify the code back to what the requirements actually asked for.
-
-Overall, AI was a useful assistant, but it did not replace thinking. The time saved on typing was partly spent on reviewing and correcting.
+On the other hand, I spent extra time reviewing AI output because it sometimes over-engineered things. A few times it suggested factories or builders, which were way too much for a coursework project. I had to strip it back to what the requirements actually asked for. So AI helped, but it wasn't a magic button. I still had to figure out most of the logic myself.
 
 ## Q9: Which parts of the final project were mainly written by you?
 
-- **The overall architecture and menu flow** — I designed the menu structure, option numbering, role routing, and feature layout.
-- **All admin CRUD sub-menus** (hero management, equipment management, player management, team management, match management).
-- **The `DataInitializer`** with all the hardcoded game data — heroes, equipment, players, teams, and match records.
-- **Auto-save logic** — connecting `FileStorageService` to every mutation point.
-- **Test cases** — I wrote all 16 test cases based on what I actually tested.
-- **Plan.md, prompts.md, agent-log.md, and this reflection** — AI helped format, but the content and decisions are mine.
-- **Core view/menu methods** — `viewMatchHistory`, `viewHeroDetails`, `viewPlayerLeaderboard`, and the leaderboard sorting submenu were refined with AI assistance, and I manually integrated and verified their output.
+The overall menu structure and how features are organized. I decided what goes where, which menu has which options, and how the role routing works.
+
+All the admin CRUD sub-menus for heroes, equipment, players, teams, and matches.
+
+`DataInitializer` with all the hardcoded data. That took a while since there are 18 heroes, 22 equipment items, 15 players, 3 teams, and 11 match records, all cross-referenced.
+
+Auto-save wiring. I had to connect `FileStorageService` to every mutation point manually because the AI just generated the service class and left it there.
+
+All 16 test cases and their documentation.
+
+Oh, and all the documentation files: Plan.md, prompts.md, agent-log.md, and this reflection. AI helped with formatting but the actual content is mine.
+
+Core view methods like `viewMatchHistory`, `viewHeroDetails`, `viewPlayerLeaderboard` were refined with AI help but I integrated and tested everything manually.
 
 ## Q10: Which parts were mainly generated or heavily assisted by AI?
 
-- **Model class skeletons** — `Person`, `Player`, `Admin`, `Hero`, `Equipment`, `Team`, `MatchRecord`. AI generated the fields, getters, setters, and `toString()`. I reviewed and adjusted (e.g., made `Person` abstract).
-- **`GameDataManager`** — AI generated all the `add/get/remove/getAll` methods using `HashMap` and `ArrayList`.
-- **`InputHelper`** — AI generated the static input validation methods with retry loops.
-- **`AuthenticationService`** — AI generated the login/logout/role-check logic.
-- **`RankingService`** — AI generated the comparators. I verified the formulas.
-- **`FileStorageService`** — AI generated the serialization save/load code.
-- **`Searchable` interface and `SearchService`** — AI generated the `matches()` methods and the global search loop.
-- **Extra features** — AI helped with the combat simulation damage formula and the tournament report formatting.
+Model class skeletons like `Person`, `Player`, `Admin`, `Hero`, `Equipment`, `Team`, and `MatchRecord`. AI wrote the fields, getters, setters, and toString(). I went through and adjusted things where needed.
 
-I estimate about **70% of the model and service layer** was AI-generated (with my review), while **100% of the application layer** (menus, user interaction, data initialization) was written by me.
+`GameDataManager` was mostly AI. All the add/get/remove/getAll methods using HashMap and ArrayList.
+
+`InputHelper` came from AI with the retry loop logic.
+
+`AuthenticationService` for login, logout, and role checking.
+
+`RankingService` comparators, but I verified the formulas myself.
+
+`FileStorageService` save and load code.
+
+Also the `Searchable` interface and `SearchService` matches() methods.
+
+For extra features, AI helped with the combat damage formula and tournament report formatting.
+
+Most of the boring stuff was AI, the interesting parts were me.
