@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 public class Team implements Serializable, Searchable {
     private static final long serialVersionUID = 1L;

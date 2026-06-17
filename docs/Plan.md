@@ -162,7 +162,7 @@ Initial dataset (hardcoded in `DataInitializer`):
 | **Teams**         |   3   |
 | **Match records** |  11   |
 
-* **Storage:** `FileStorageService` uses `ObjectOutputStream`/`ObjectInputStream` to serialize `GameDataManager` to/from `data.ser`. For extra credit, JSON may be used.
+* **Storage:** `FileStorageService` uses `ObjectOutputStream`/`ObjectInputStream` to serialize `GameDataManager` to/from `data.ser`.
 
 ---
 

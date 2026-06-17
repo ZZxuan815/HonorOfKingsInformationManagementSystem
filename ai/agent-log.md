@@ -47,7 +47,7 @@ Three AI agent roles were used throughout the project, directed by me (the human
 | 5 | Ranking edge cases | Noted that `usageCount` and `winRateContribution` are zero in initial data | Expected — the initial dataset has no gameplay history. The ranking still sorts alphabetically when all scores are 0. |
 | 6 | File I/O validation | Checked that all model classes implement `Serializable` | Confirmed. `Person`, `Hero`, `Equipment`, `Team`, `MatchRecord` all implement it. |
 | 6 | Compilation check | Verified the project compiles with zero errors | I ran `javac -d bin -sourcepath src` and confirmed. |
-| 6 | Test case generation | Drafted 10 test cases covering login, sorting, search, CRUD, persistence | I expanded this to 14 tests and added more edge cases. |
+| 6 | Test case generation | Drafted 10 test cases covering login, sorting, search, CRUD, persistence | I expanded this to 16 tests and added more edge cases. |
 
 ---
 

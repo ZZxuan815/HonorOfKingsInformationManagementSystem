@@ -52,7 +52,7 @@
 | **Function** | Equipment Statistics — all scores are 0.0 due to unpopulated usage data |
 | **Input** | Login as Admin → Option 11 (View equipment statistics) |
 | **Expected** | All equipment displayed with Score = 0.00, sorted alphabetically (all ties) |
-| **Actual** | 20 equipment items listed, all scores 0.00, sorted alphabetically by name |
+| **Actual** | 22 equipment items listed, all scores 0.00, sorted alphabetically by name |
 | **Result** | PASS |
 | **Bug Found** | None — `usageCount` and `winRateContribution` are 0 by default; no data update mechanism exists yet. |
 
