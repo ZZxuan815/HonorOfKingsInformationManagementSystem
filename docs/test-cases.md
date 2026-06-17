@@ -80,9 +80,9 @@
 | **Function** | Player self-profile edit — update level, win rate, owned heroes |
 | **Input** | Login as Player `P001` (Li Bai) → Option 8 → New level: `50` → New win rate: `85` → Owned heroes: `Li Bai,Zhao Yun` |
 | **Expected** | "Profile updated successfully." Level changes from 35 to 50, win rate from 68% to 85%, owned heroes updated |
-| **Actual** | Profile updated. Re-login and view player info confirms Level=50, Win Rate=85%, Owned Heroes=[Li Bai, Zhao Yun] |
+| **Actual** | Profile updated. Re-login and view player info confirms Level=50, Win Rate=85%, Owned Heroes=[Li Bai, Zhao Yun]. Noticed spacing issue on first try (typed "Li Bai, Zhao Yun" with space, hero name became " Zhao Yun" with leading space) — fixed the code to trim entries. |
 | **Result** | PASS |
-| **Bug Found** | None |
+| **Bug Found** | Minor: trailing space in comma-separated input caused lookup failure. Fixed with .trim(). |
 
 ---
 
