@@ -65,9 +65,9 @@ public class Equipment implements Serializable, Searchable {
     @Override
     public boolean matches(String keyword) {
         String kw = keyword.toLowerCase();
-        if (name.toLowerCase().contains(kw)) return true;
-        if (type.toLowerCase().contains(kw)) return true;
-        if (statBonus.toLowerCase().contains(kw)) return true;
+        if (name != null && name.toLowerCase().contains(kw)) return true;
+        if (type != null && type.toLowerCase().contains(kw)) return true;
+        if (statBonus != null && statBonus.toLowerCase().contains(kw)) return true;
         return false;
     }
 

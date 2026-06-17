@@ -32,6 +32,11 @@ java -cp bin main.HonorOfKingsApp
 | `P008` | `pass555` | Player | Han Xin |
 | `P009` | `pass666` | Player | Ya Se |
 | `P010` | `pass777` | Player | Mo Ye |
+| `P011` | `pass888` | Player | Sun Shang Xiang |
+| `P012` | `pass999` | Player | Zhu Ge Liang |
+| `P013` | `pass000` | Player | Lian Po |
+| `P014` | `passaaa` | Player | Cai Wen Ji |
+| `P015` | `passbbb` | Player | Li Yuan Fang |
 
 ## 4. Implemented Features
 
@@ -63,7 +68,7 @@ java -cp bin main.HonorOfKingsApp
 - **Enums:** `HeroType` (WARRIOR, MAGE, ASSASSIN, TANK, SUPPORT, MARKSMAN, JUNGLER).
 
 ## 6. AI Usage Summary
-I used **GPT-4o via opencode** as my AI assistant. I followed a multi-agent approach with three roles:
+I used **DeepSeek via opencode** as my AI assistant. I followed a multi-agent approach with three roles:
 - **Architect Agent:** Helped design the class hierarchy and menu flow.
 - **Implementation Agent:** Generated specific methods like CRUD operations, comparators, and file I/O code.
 - **Testing/Reviewer Agent:** Helped find edge cases and draft test cases.

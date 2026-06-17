@@ -28,13 +28,7 @@ public class SearchService {
     }
 
     public Player findPlayerById(String id) {
-        String lowerId = id.toLowerCase();
-        for (Player p : dataManager.getAllPlayers()) {
-            if (p.getId().toLowerCase().equals(lowerId)) {
-                return p;
-            }
-        }
-        return null;
+        return dataManager.getPlayer(id);
     }
 
     public Hero findHeroByName(String name) {
@@ -58,13 +52,7 @@ public class SearchService {
     }
 
     public Team findTeamById(String id) {
-        String lowerId = id.toLowerCase();
-        for (Team t : dataManager.getAllTeams()) {
-            if (t.getTeamId().toLowerCase().equals(lowerId)) {
-                return t;
-            }
-        }
-        return null;
+        return dataManager.getTeam(id);
     }
 
     public List<Searchable> search(String keyword) {

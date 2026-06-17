@@ -8,7 +8,7 @@
 
 ## Q1: Which AI tools or models did you use?
 
-I used **GPT-4o via opencode** for the entire project. I did not switch between different AI tools; instead, I assigned different roles to the same model (Architect, Implementation, and Reviewer) to get different types of help.
+I used **DeepSeek via opencode** for the entire project. I did not switch between different AI tools; instead, I assigned different roles to the same model (Architect, Implementation, and Reviewer) to get different types of help.
 
 ## Q2: Which prompt was the most useful? Why?
 

@@ -243,15 +243,14 @@ Three AI agent roles (can be same tool, different roles):
 
 ---
 
-## 12. Final Reflection Placeholder
-*(To be completed after implementation — see docs/reflection.md for full answers)*
+## 12. Final Reflection
+Full reflection with all 10 Q&A answers is documented in `ai/reflection.md`.
 
-Summary of key learning:
-* Which AI prompts were most/least useful.
-* Bugs I fixed myself vs. AI fixed.
-* Java concepts I now understand better (e.g., polymorphism with collections).
-* How AI affected development speed and code quality.
-* Parts written by me vs. AI-assisted.
+Key learnings from this project:
+* Custom Comparators and sorting — understanding how `compare()` return values work.
+* HashMap vs ArrayList — why HashMap is better for ID-based lookups.
+* Serialization — how Java object serialization works with `serialVersionUID`.
+* AI as a tool — AI saved time on boilerplate but required careful review of every generated line.
 
 ---
 

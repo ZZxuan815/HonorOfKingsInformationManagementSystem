@@ -1,5 +1,6 @@
 package service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,7 +14,8 @@ import model.MatchRecord;
 import model.Player;
 import model.Team;
 
-public class GameDataManager {
+public class GameDataManager implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Map<String, Player> players = new HashMap<>();
     private Map<String, Admin> admins = new HashMap<>();
     private Map<String, Hero> heroes = new HashMap<>();

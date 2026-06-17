@@ -187,20 +187,34 @@ public class PlayerMenu {
         }
 
         System.out.println("Current Owned Heroes: " + player.getOwnedHeroes());
-        String heroesStr = InputHelper.readString("Enter owned heroes (comma-separated, or press Enter to skip): ");
+        String heroesStr = InputHelper.readStringOptional("Enter owned heroes (comma-separated, or press Enter to skip): ");
         if (!heroesStr.isEmpty()) {
-            player.setOwnedHeroes(Arrays.asList(heroesStr.split(",")));
+            List<String> trimmed = new ArrayList<>();
+            for (String h : heroesStr.split(",")) {
+                String t = h.trim();
+                if (!t.isEmpty()) trimmed.add(t);
+            }
+            if (!trimmed.isEmpty()) {
+                player.setOwnedHeroes(trimmed);
+            }
         }
 
-        String equipHero = InputHelper.readString("Enter hero name to equip (or press Enter to skip): ");
+        String equipHero = InputHelper.readStringOptional("Enter hero name to equip (or press Enter to skip): ");
         if (!equipHero.isEmpty()) {
             if (!player.getOwnedHeroes().contains(equipHero)) {
                 System.out.println("You don't own this hero.");
             } else {
-                String equipStr = InputHelper.readString("Enter equipment names (comma-separated): ");
+                String equipStr = InputHelper.readStringOptional("Enter equipment names (comma-separated): ");
                 if (!equipStr.isEmpty()) {
-                    player.getEquippedItems().put(equipHero, Arrays.asList(equipStr.split(",")));
-                    System.out.println("Equipment updated for " + equipHero + ".");
+                    List<String> trimmedEquip = new ArrayList<>();
+                    for (String e : equipStr.split(",")) {
+                        String t = e.trim();
+                        if (!t.isEmpty()) trimmedEquip.add(t);
+                    }
+                    if (!trimmedEquip.isEmpty()) {
+                        player.getEquippedItems().put(equipHero, trimmedEquip);
+                        System.out.println("Equipment updated for " + equipHero + ".");
+                    }
                 }
             }
         }

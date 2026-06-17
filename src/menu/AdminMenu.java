@@ -369,7 +369,7 @@ public class AdminMenu {
         String name = InputHelper.readString("Enter player name: ");
         String password = InputHelper.readString("Enter password: ");
         int level = InputHelper.readInt("Enter level: ");
-        double winRate = InputHelper.readInt("Enter win rate (0-100): ") / 100.0;
+        double winRate = InputHelper.readDoubleRange("Enter win rate (0-100): ", 0, 100) / 100.0;
         String teamId = InputHelper.readString("Enter team ID: ");
         Player player = new Player(id, name, password, level, winRate, teamId);
         gdm.addPlayer(player);

@@ -87,10 +87,10 @@ public class MatchRecord implements Serializable, Searchable {
     @Override
     public boolean matches(String keyword) {
         String kw = keyword.toLowerCase();
-        if (matchId.toLowerCase().contains(kw)) return true;
-        if (teamA.toLowerCase().contains(kw)) return true;
-        if (teamB.toLowerCase().contains(kw)) return true;
-        if (winner.toLowerCase().contains(kw)) return true;
+        if (matchId != null && matchId.toLowerCase().contains(kw)) return true;
+        if (teamA != null && teamA.toLowerCase().contains(kw)) return true;
+        if (teamB != null && teamB.toLowerCase().contains(kw)) return true;
+        if (winner != null && winner.toLowerCase().contains(kw)) return true;
         if (result != null && result.name().toLowerCase().contains(kw)) return true;
         return false;
     }
