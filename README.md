@@ -65,7 +65,7 @@ java -cp bin main.HonorOfKingsApp
 - **Collections:** `HashMap` for fast ID/name lookups, `ArrayList` for ordered lists, custom `Comparator` for sorting.
 - **Exception Handling:** `try-catch` for file I/O errors, `NumberFormatException` for invalid input, and input range validation.
 - **File I/O:** `ObjectInputStream` and `ObjectOutputStream` for saving and loading `GameDataManager`.
-- **Enums:** `HeroType` (WARRIOR, MAGE, ASSASSIN, TANK, SUPPORT, MARKSMAN, JUNGLER).
+- **Enums:** `HeroType` (WARRIOR, MAGE, ASSASSIN, TANK, SUPPORT, MARKSMAN, JUNGLER) and `MatchResult` (WIN, LOSS, DRAW).
 
 ## 6. AI Usage Summary
 I used **DeepSeek via opencode** as my AI assistant. I followed a multi-agent approach with three roles:
