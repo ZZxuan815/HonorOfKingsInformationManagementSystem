@@ -16,6 +16,7 @@ public class Hero implements Serializable, Searchable {
     private List<String> compatibleEquipment;
 
     public Hero() {
+        this.type = HeroType.WARRIOR;
         this.baseStats = new HashMap<>();
         this.compatibleEquipment = new ArrayList<>();
     }
@@ -62,10 +63,12 @@ public class Hero implements Serializable, Searchable {
     @Override
     public boolean matches(String keyword) {
         String kw = keyword.toLowerCase();
-        if (name.toLowerCase().contains(kw)) return true;
-        if (type.name().toLowerCase().contains(kw)) return true;
-        for (String eq : compatibleEquipment) {
-            if (eq.toLowerCase().contains(kw)) return true;
+        if (name != null && name.toLowerCase().contains(kw)) return true;
+        if (type != null && type.name().toLowerCase().contains(kw)) return true;
+        if (compatibleEquipment != null) {
+            for (String eq : compatibleEquipment) {
+                if (eq != null && eq.toLowerCase().contains(kw)) return true;
+            }
         }
         return false;
     }

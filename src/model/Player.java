@@ -73,10 +73,12 @@ public class Player extends Person implements Searchable {
     @Override
     public boolean matches(String keyword) {
         String kw = keyword.toLowerCase();
-        if (getId().toLowerCase().contains(kw)) return true;
-        if (getName().toLowerCase().contains(kw)) return true;
-        for (String hero : ownedHeroes) {
-            if (hero.toLowerCase().contains(kw)) return true;
+        if (getId() != null && getId().toLowerCase().contains(kw)) return true;
+        if (getName() != null && getName().toLowerCase().contains(kw)) return true;
+        if (ownedHeroes != null) {
+            for (String hero : ownedHeroes) {
+                if (hero != null && hero.toLowerCase().contains(kw)) return true;
+            }
         }
         return false;
     }

@@ -69,10 +69,12 @@ public class Team implements Serializable, Searchable {
     @Override
     public boolean matches(String keyword) {
         String kw = keyword.toLowerCase();
-        if (teamId.toLowerCase().contains(kw)) return true;
-        if (name.toLowerCase().contains(kw)) return true;
-        for (String member : memberIds) {
-            if (member.toLowerCase().contains(kw)) return true;
+        if (teamId != null && teamId.toLowerCase().contains(kw)) return true;
+        if (name != null && name.toLowerCase().contains(kw)) return true;
+        if (memberIds != null) {
+            for (String member : memberIds) {
+                if (member != null && member.toLowerCase().contains(kw)) return true;
+            }
         }
         return false;
     }
