@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Team implements Serializable, Searchable {
     private static final long serialVersionUID = 1L;
@@ -46,7 +47,7 @@ public class Team implements Serializable, Searchable {
     }
 
     public void setMemberIds(List<String> memberIds) {
-        this.memberIds = memberIds;
+        this.memberIds = (memberIds != null) ? new ArrayList<>(memberIds) : new ArrayList<>();
     }
 
     public int getTotalMatches() {

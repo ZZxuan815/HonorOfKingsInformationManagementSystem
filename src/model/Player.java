@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Player extends Person implements Searchable {
     private static final long serialVersionUID = 1L;
@@ -58,7 +59,7 @@ public class Player extends Person implements Searchable {
     }
 
     public void setOwnedHeroes(List<String> ownedHeroes) {
-        this.ownedHeroes = ownedHeroes;
+        this.ownedHeroes = (ownedHeroes != null) ? new ArrayList<>(ownedHeroes) : new ArrayList<>();
     }
 
     public Map<String, List<String>> getEquippedItems() {

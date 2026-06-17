@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Hero implements Serializable, Searchable {
     private static final long serialVersionUID = 1L;
@@ -55,7 +56,7 @@ public class Hero implements Serializable, Searchable {
     }
 
     public void setCompatibleEquipment(List<String> compatibleEquipment) {
-        this.compatibleEquipment = compatibleEquipment;
+        this.compatibleEquipment = (compatibleEquipment != null) ? new ArrayList<>(compatibleEquipment) : new ArrayList<>();
     }
 
     @Override
