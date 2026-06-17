@@ -71,7 +71,7 @@ I used **GPT-4o via opencode** as my AI assistant. I followed a multi-agent appr
 I never accepted AI output blindly. Every piece of code was reviewed, compiled, and tested before committing. All prompts, decisions, and reflections are recorded in the `ai/` folder.
 
 ## 7. Testing Summary
-I tested the system manually with 14 test cases covering:
+I tested the system manually with 16 test cases covering:
 - Login authentication (valid and invalid)
 - Player leaderboard sorting and tie-breaking
 - Equipment statistics with empty data
@@ -83,9 +83,9 @@ I tested the system manually with 14 test cases covering:
 - Combat simulation (console and GUI modes)
 - Automated tournament and report export
 
-All 14 tests passed. Details are in `docs/test-cases.md`.
+All 16 tests passed. Details are in `docs/test-cases.md`.
 
 ## 8. Known Limitations
 - The GUI combat mode uses `JOptionPane`, which requires a desktop environment. It will not work in headless environments, but the console mode works everywhere.
 - Equipment `usageCount` and `winRateContribution` start at zero in the initial dataset because there is no gameplay data feed. The ranking still works but all scores are 0.00 until admin manually updates these values.
-- The match history feature currently shows all match records. Filtering by "last N matches for a specific player or team" is not yet implemented.
+- The system does not automatically update equipment `usageCount` or `winRateContribution` based on match outcomes — these must be set manually by admin.
